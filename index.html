@@ -446,6 +446,19 @@
         @media print {
           .animate-scaleIn { animation: none !important; }
         }
+        @media print {
+          #militants-table thead, #candidates-table thead { display:table-header-group !important; }
+          #militants-table tbody tr, #candidates-table tbody tr {
+            display:table-row !important; margin:0 !important; padding:0 !important;
+            border:none !important; border-radius:0 !important; background:none !important; box-shadow:none !important;
+          }
+          #militants-table tbody td, #candidates-table tbody td {
+            display:table-cell !important; width:auto !important; flex:none !important; order:0 !important; padding:6px !important;
+          }
+          #militants-table tbody td[colspan], #candidates-table tbody td[colspan] { width:auto !important; }
+          #militants-table tbody td::before, #candidates-table tbody td::before { content:none !important; }
+          .db-detail-btn { display:none !important; }
+        }
         #print-card-header, #print-card-footer { display: none; }
         @media print {
           body.printing-card > *:not(#print-card-modal) { display: none !important; }
@@ -541,44 +554,65 @@
             .onb-start-btn { padding:10px 24px; }
         }
 
-        /* ===== MOBILE: militant & candidate tables -> cards (< 640px) ===== */
+        /* ===== DB TABLES: compact 2-line cards + detail (all screens) ===== */
+        #militants-table thead, #candidates-table thead { display:none; }
+        #militants-table tbody tr, #candidates-table tbody tr {
+            display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px;
+            margin:0 0 12px; padding:10px;
+            border:1px solid rgba(255,255,255,0.1) !important;
+            border-radius:16px; background:rgba(255,255,255,0.03);
+            box-shadow:0 2px 12px rgba(0,0,0,0.25);
+        }
+        #militants-table tbody td, #candidates-table tbody td {
+            border:none !important; padding:4px; box-sizing:border-box; min-width:0;
+        }
+        #militants-table tbody td::before, #candidates-table tbody td::before {
+            content:attr(data-label);
+            display:block; margin-bottom:2px;
+            font-size:9px; font-weight:700; color:#94a3b8;
+        }
+        /* line 1: photo + (id) + name + status/detail */
+        #militants-table tbody td:nth-child(1), #candidates-table tbody td:nth-child(1) { order:1; flex:none; }
+        #militants-table tbody td:nth-child(2) { order:2; flex:none; }
+        #militants-table tbody td:nth-child(3), #candidates-table tbody td:nth-child(3) { order:3; flex:1 1 0; }
+        #militants-table tbody td:nth-child(9), #candidates-table tbody td:nth-child(9) { order:4; flex:none; text-align:center; }
+        /* line 2: location fields (compact, one visual line) */
+        #militants-table tbody td:nth-child(4), #militants-table tbody td:nth-child(5),
+        #militants-table tbody td:nth-child(6) { order:5; flex:1 1 30%; }
+        #candidates-table tbody td:nth-child(5), #candidates-table tbody td:nth-child(6),
+        #candidates-table tbody td:nth-child(7), #candidates-table tbody td:nth-child(8) { order:5; flex:1 1 22%; }
+        /* hidden cells -> revealed by .row-open */
+        #militants-table tbody td:nth-child(7), #militants-table tbody td:nth-child(8),
+        #militants-table tbody td:nth-child(10), #militants-table tbody td:nth-child(11),
+        #militants-table tbody td:nth-child(12), #militants-table tbody td:nth-child(13),
+        #candidates-table tbody td:nth-child(2), #candidates-table tbody td:nth-child(4),
+        #candidates-table tbody td:nth-child(10), #candidates-table tbody td:nth-child(11) { display:none; }
+        #militants-table tbody tr.row-open td:nth-child(7), #militants-table tbody tr.row-open td:nth-child(8),
+        #militants-table tbody tr.row-open td:nth-child(10), #militants-table tbody tr.row-open td:nth-child(11),
+        #militants-table tbody tr.row-open td:nth-child(12), #militants-table tbody tr.row-open td:nth-child(13),
+        #candidates-table tbody tr.row-open td:nth-child(2), #candidates-table tbody tr.row-open td:nth-child(4),
+        #candidates-table tbody tr.row-open td:nth-child(10), #candidates-table tbody tr.row-open td:nth-child(11) {
+            display:block; order:6; flex:1 1 46%; min-width:120px;
+        }
+        /* kesma-group / empty / load-more banner rows */
+        #militants-table tbody td[colspan], #candidates-table tbody td[colspan] { order:0; flex:1 1 100%; width:100% !important; text-align:center; padding:8px !important; }
+        #militants-table tbody td[colspan]::before, #candidates-table tbody td[colspan]::before { content:none; }
+        #militants-table tbody tr.hidden { display:none !important; }
+        /* no label above photo / id / name / status */
+        #militants-table tbody td:nth-child(1)::before, #militants-table tbody td:nth-child(2)::before,
+        #militants-table tbody td:nth-child(3)::before, #militants-table tbody td:nth-child(9)::before,
+        #candidates-table tbody td:nth-child(1)::before, #candidates-table tbody td:nth-child(3)::before,
+        #candidates-table tbody td:nth-child(9)::before { content:none; }
+        .db-detail-btn {
+            display:inline-flex; align-items:center; justify-content:center; gap:4px;
+            padding:4px 10px; border-radius:9999px; cursor:pointer;
+            font-size:10px; font-weight:700; white-space:nowrap;
+            color:#fcd34d; background:rgba(245,158,11,0.12);
+            border:1px solid rgba(245,158,11,0.35); transition:all .2s ease;
+        }
+        .db-detail-btn:hover { background:rgba(245,158,11,0.22); }
+        tr.row-open .db-detail-btn { color:#86efac; background:rgba(16,185,129,0.12); border-color:rgba(16,185,129,0.35); }
         @media (max-width:640px) {
-            #militants-table thead, #candidates-table thead { display:none; }
-            #militants-table tbody, #militants-table tbody tr, #militants-table tbody td,
-            #candidates-table tbody, #candidates-table tbody tr, #candidates-table tbody td { display:block; box-sizing:border-box; }
-            #militants-table tbody tr, #candidates-table tbody tr {
-                display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px;
-                margin:0 0 12px; padding:10px;
-                border:1px solid rgba(255,255,255,0.1) !important;
-                border-radius:16px; background:rgba(255,255,255,0.03);
-                box-shadow:0 2px 12px rgba(0,0,0,0.25);
-            }
-            #militants-table tbody td, #candidates-table tbody td {
-                border:none !important; padding:4px; width:calc(50% - 4px); text-align:right;
-            }
-            #militants-table tbody td::before, #candidates-table tbody td::before {
-                content:attr(data-label);
-                display:block; margin-bottom:2px;
-                font-size:9px; font-weight:700; color:#94a3b8;
-            }
-            #militants-table tbody td:nth-child(1), #candidates-table tbody td:nth-child(1) { order:1; flex:none; width:auto; }
-            #militants-table tbody td:nth-child(3), #candidates-table tbody td:nth-child(3) { order:2; flex:1 1 0; width:auto; min-width:0; }
-            #militants-table tbody td:nth-child(9), #candidates-table tbody td:nth-child(9) { order:3; flex:none; width:auto; }
-            #militants-table tbody td:nth-child(2), #militants-table tbody td:nth-child(4),
-            #militants-table tbody td:nth-child(5), #militants-table tbody td:nth-child(6),
-            #militants-table tbody td:nth-child(7), #militants-table tbody td:nth-child(8),
-            #militants-table tbody td:nth-child(10), #militants-table tbody td:nth-child(11),
-            #militants-table tbody td:nth-child(12), #militants-table tbody td:nth-child(13),
-            #candidates-table tbody td:nth-child(2), #candidates-table tbody td:nth-child(4),
-            #candidates-table tbody td:nth-child(5), #candidates-table tbody td:nth-child(6),
-            #candidates-table tbody td:nth-child(7), #candidates-table tbody td:nth-child(8),
-            #candidates-table tbody td:nth-child(10), #candidates-table tbody td:nth-child(11) { order:4; }
-            #militants-table tbody td:nth-child(1)::before, #militants-table tbody td:nth-child(3)::before,
-            #militants-table tbody td:nth-child(9)::before, #candidates-table tbody td:nth-child(1)::before,
-            #candidates-table tbody td:nth-child(3)::before, #candidates-table tbody td:nth-child(9)::before,
-            #militants-table tbody td[colspan]::before, #candidates-table tbody td[colspan]::before { content:none; }
-            #militants-table tbody td[colspan], #candidates-table tbody td[colspan] { width:100% !important; order:0; padding:8px !important; }
-            #militants-table tbody tr.hidden { display:none !important; }
             #db-cand-sheet-workspace > .card-dark > .flex.items-center.gap-3 { flex-wrap:wrap; justify-content:center; }
         }
 
@@ -3312,6 +3346,8 @@
             'db.tableInfluence': 'الاستقطاب',
             'db.tableQr': 'QR',
             'db.tableActions': 'الإجراءات',
+            'db.detail': 'التفاصيل',
+            'db.hide': 'إخفاء',
             'db.bureauLogin': 'مكتب الجهاز',
             'db.mohafadLogin': 'دخول مسؤول المحافظة',
             'card.title': 'طباعة البطاقة',
@@ -3629,6 +3665,8 @@
             'db.tableInfluence': 'Influence',
             'db.tableQr': 'QR',
             'db.tableActions': 'Actions',
+            'db.detail': 'Details',
+            'db.hide': 'Hide',
             'db.bureauLogin': 'Local Bureau Login',
             'db.mohafadLogin': 'Mohafadha Official Login',
             'card.title': 'Print Card',
@@ -3946,6 +3984,8 @@
             'db.tableInfluence': 'Influence',
             'db.tableQr': 'QR',
             'db.tableActions': 'Actions',
+            'db.detail': 'Détails',
+            'db.hide': 'Masquer',
             'db.bureauLogin': 'Connexion bureau local',
             'db.mohafadLogin': 'Connexion responsable mohafadha',
             'card.title': 'Imprimer la carte',
@@ -5407,7 +5447,7 @@
         }
 
         let candidatesList = [];
-        (async function initCandidates() {
+        let candidatesReady = (async function initCandidates() {
             try {
                 const res = await fetch(API_BASE + '/candidates.php?per_page=5000');
                 const json = await res.json();
@@ -5512,7 +5552,7 @@
                 ? '<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20"><span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> مسجل</span>'
                 : '<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20"><span class="w-2 h-2 rounded-full bg-slate-400"></span> ' + c.status + '</span>';
             return '<tr class="hover:bg-white/5 transition border-b border-white/5">'
-                + '<td class="p-4" data-label="الصورة"><img src="' + (c.photoUrl || '') + '" class="w-10 h-12 object-cover rounded-lg border border-white/20 shadow-sm" onerror="this.onerror=null;this.style.display=\'none\'" /></td>'
+                + '<td class="p-4" data-label="الصورة"><img src="' + (c.photoUrl || '') + '" data-photo-id="' + c.id + '" class="w-10 h-12 object-cover rounded-lg border border-white/20 shadow-sm" onerror="this.onerror=null;this.style.display=\'none\'" /></td>'
                 + '<td class="p-4 font-mono font-bold text-white" data-label="الرقم">' + (c.id || '-') + '</td>'
                 + '<td class="p-4" data-label="اللقب والاسم"><div class="font-extrabold text-white">' + c.lastname + ' ' + c.firstname + '</div></td>'
                 + '<td class="p-4 text-slate-300" data-label="تاريخ ومكان الازدياد">' + (c.dob || '-') + '<br><span class="text-[10px] text-slate-400">' + (c.pob || '') + '</span></td>'
@@ -5520,7 +5560,7 @@
                 + '<td class="p-4 text-slate-300" data-label="المحافظة">' + c.daira + '</td>'
                 + '<td class="p-4 text-slate-300" data-label="القسمة">' + (c.kesma || '-') + '</td>'
                 + '<td class="p-4 font-mono text-slate-300" data-label="رقم الهاتف">' + c.phone + '</td>'
-                + '<td class="p-4" data-label="الحالة">' + statusBadge + '</td>'
+                + '<td class="p-4" data-label="الحالة">' + statusBadge + '<button type="button" class="db-detail-btn" data-i18n="db.detail" onclick="toggleRowDetail(this.closest(\'tr\'))">' + photoI18n('db.detail') + '</button></td>'
                 + '<td class="p-4 text-center" data-label="QR"><img class="db-qr-img" style="width:48px;height:48px;border-radius:4px;border:1px solid rgba(255,255,255,0.2);image-rendering:pixelated;background:white;" data-qr-id="' + c.id + '" alt="QR" /></td>'
                 + '<td class="p-4 text-center" data-label="الاستمارة"><button onclick="openCandidateForm(\'' + c.id + '\')" title="عرض استمارة المترشح" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-500/40 transition-all"><i class="fa-regular fa-eye"></i></button></td>'
                 + '</tr>';
@@ -5787,7 +5827,11 @@
             rows.forEach(r => {
                 if (r.style.display === 'none') return;
                 const cells = r.querySelectorAll('td');
-                const row = Array.from(cells).map(c => '"' + c.textContent.trim().replace(/"/g, '""') + '"').join(',');
+                const row = Array.from(cells).map(c => {
+                    const clone = c.cloneNode(true);
+                    clone.querySelectorAll('.db-detail-btn').forEach(b => b.remove());
+                    return '"' + clone.textContent.trim().replace(/"/g, '""') + '"';
+                }).join(',');
                 csv += row + '\n';
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -6014,7 +6058,7 @@
             const rowHtml = `
                 <tr class="hover:bg-white/5 transition border-b border-white/5">
                     <td class="p-4" data-label="الصورة">
-                        <img src="${m.photoUrl || flnAvatarUri(m)}" class="w-10 h-12 object-cover rounded-lg border border-white/20 shadow-sm" onerror="this.onerror=null;this.src='${flnAvatarUri(m)}'" />
+                        <img src="${m.photoUrl || flnAvatarUri(m)}" data-photo-id="${m.id}" class="w-10 h-12 object-cover rounded-lg border border-white/20 shadow-sm" onerror="this.onerror=null;this.src='${flnAvatarUri(m)}'" />
                     </td>
                     <td class="p-4 font-mono font-bold text-white" data-label="رقم العضوية">${m.id}</td>
                     <td class="p-4" data-label="اللقب والاسم">
@@ -6032,7 +6076,7 @@
                         <div class="font-bold text-white">${m.dob.split('-').reverse().join('/')}</div>
                         <div class="text-[10px] text-white/50">بـ ${m.pob}</div>
                     </td>
-                    <td class="p-4" data-label="الحالة النشطة">${statusBadge}</td>
+                    <td class="p-4" data-label="الحالة النشطة">${statusBadge}<button type="button" class="db-detail-btn" data-i18n="db.detail" onclick="toggleRowDetail(this.closest('tr'))">${photoI18n('db.detail')}</button></td>
                     <td class="p-4 font-bold text-white/70" data-label="تاريخ الانتساب">${m.joinDate.split('-').reverse().join('/')}</td>
                     <td class="p-4" data-label="التأثير والترشيح">
                         <div class="font-bold text-white">استقطاب: <span class="text-green-400 font-extrabold">${m.influenceCount}</span></div>
@@ -6478,6 +6522,7 @@
         }
 
         async function validateAndCropPhoto(file, opts) {
+            _demoHydrationPaused = true;
             cropTarget = (opts && opts.target) || 'militant';
             photoState.ready = false;
             photoState.croppedDataUrl = '';
@@ -6568,6 +6613,7 @@
         }
         document.addEventListener('DOMContentLoaded', function() {
             initPhotoPipeline();
+            hydrateDemoPhotos();
         });
 
         function refreshPhotoUI() {
@@ -6585,6 +6631,161 @@
             get current() { return currentUploadedPhotoBase64; },
             parseJpegDateTaken: parseJpegDateTaken
         };
+
+        function toggleRowDetail(tr) {
+            if (!tr) return;
+            const open = tr.classList.toggle('row-open');
+            const btn = tr.querySelector('.db-detail-btn');
+            if (btn) {
+                const key = open ? 'db.hide' : 'db.detail';
+                btn.textContent = photoI18n(key);
+                btn.setAttribute('data-i18n', key);
+            }
+        }
+
+        let _demoHydrationPaused = false;
+        const _examplePhotoCache = {};
+        function _syncPhotoImgs(id, url) {
+            document.querySelectorAll('img[data-photo-id]').forEach(img => {
+                if (img.getAttribute('data-photo-id') === String(id) && url) img.src = url;
+            });
+        }
+        function generateExamplePhoto(rec) {
+            const id = String((rec && rec.id) || '');
+            const cvs = document.createElement('canvas');
+            cvs.width = 600; cvs.height = 771;
+            const ctx = cvs.getContext('2d');
+            ctx.scale(0.5, 0.5);
+            ctx.fillStyle = '#f4f1ea';
+            ctx.fillRect(0, 0, 1200, 1543);
+            const skin = ['#e8b78a','#d9a06b','#c68e58','#f0c8a0','#8d5a3a','#a97a50'][_fh(id + 'sk') % 6];
+            const hair = ['#1c1c1c','#3a2a20','#5a4632','#0f0f0f','#6b5a4a'][_fh(id + 'hr') % 5];
+            const cloth = ['#1e5631','#0d2a11','#22314f','#3a2a20','#143718'][_fh(id + 'cl') % 5];
+            const female = _fh(id + 'fx') % 10 < 4;
+            const scarf = female && (_fh(id + 'sf') % 10 < 5);
+            const glasses = _fh(id + 'gl') % 10 < 3;
+            ctx.fillStyle = cloth;
+            ctx.beginPath();
+            ctx.ellipse(600, 1150, 430, 160, 0, 0, Math.PI);
+            ctx.closePath(); ctx.fill();
+            ctx.fillStyle = skin;
+            ctx.fillRect(540, 1000, 120, 180);
+            ctx.beginPath();
+            ctx.ellipse(600, 700, 235, 300, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath(); ctx.ellipse(350, 760, 38, 60, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(850, 760, 38, 60, 0, 0, Math.PI * 2); ctx.fill();
+            if (scarf) {
+                const sc = ['#d21034','#006233','#0a3d91','#3a3a3a','#7a2e1d'][_fh(id + 'sv') % 5];
+                ctx.fillStyle = sc;
+                ctx.beginPath();
+                ctx.moveTo(300, 520);
+                ctx.quadraticCurveTo(600, 300, 900, 520);
+                ctx.quadraticCurveTo(960, 700, 900, 880);
+                ctx.lineTo(820, 760);
+                ctx.quadraticCurveTo(780, 900, 600, 940);
+                ctx.quadraticCurveTo(420, 900, 380, 760);
+                ctx.lineTo(300, 880);
+                ctx.quadraticCurveTo(240, 700, 300, 520);
+                ctx.closePath(); ctx.fill();
+            } else {
+                ctx.fillStyle = hair;
+                ctx.beginPath();
+                ctx.moveTo(350, 640);
+                ctx.quadraticCurveTo(600, 300, 850, 640);
+                ctx.quadraticCurveTo(820, 560, 740, 560);
+                ctx.quadraticCurveTo(600, 500, 460, 560);
+                ctx.quadraticCurveTo(380, 560, 350, 640);
+                ctx.closePath(); ctx.fill();
+            }
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.ellipse(505, 730, 55, 44, -0.1, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(695, 730, 55, 44, 0.1, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = ['#3a2a20','#274a2a','#1f3a5f'][_fh(id + 'ir') % 3];
+            ctx.beginPath(); ctx.arc(510, 732, 16, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(690, 732, 16, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = hair; ctx.lineWidth = 10; ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(460, 660); ctx.quadraticCurveTo(505, 645, 550, 658); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(650, 658); ctx.quadraticCurveTo(695, 645, 740, 660); ctx.stroke();
+            ctx.strokeStyle = 'rgba(120,70,40,0.5)'; ctx.lineWidth = 8;
+            ctx.beginPath(); ctx.moveTo(600, 700); ctx.quadraticCurveTo(615, 770, 600, 800); ctx.stroke();
+            ctx.strokeStyle = '#a8644a'; ctx.lineWidth = 9;
+            ctx.beginPath(); ctx.moveTo(555, 845); ctx.quadraticCurveTo(600, 868, 645, 845); ctx.stroke();
+            if (glasses) {
+                ctx.strokeStyle = '#1f1f1f'; ctx.lineWidth = 6;
+                ctx.strokeRect(450, 690, 100, 80);
+                ctx.strokeRect(650, 690, 100, 80);
+                ctx.beginPath(); ctx.moveTo(550, 725); ctx.lineTo(650, 725); ctx.stroke();
+            }
+            return new Promise((resolve) => {
+                cvs.toBlob(async (blob) => {
+                    try {
+                        const file = new File([blob], 'example.jpg', { type: 'image/jpeg' });
+                        const savedTarget = cropTarget;
+                        const savedBase64 = currentUploadedPhotoBase64;
+                        const savedState = {
+                            ready: photoState.ready,
+                            croppedDataUrl: photoState.croppedDataUrl,
+                            takenAt: photoState.takenAt,
+                            ageDeclared: photoState.ageDeclared
+                        };
+                        const savedCardPhoto = document.getElementById('cd-cardPhoto') ? document.getElementById('cd-cardPhoto').src : '';
+                        const savedThumb = document.getElementById('cd-photoPreviewThumb') ? document.getElementById('cd-photoPreviewThumb').src : '';
+                        cropTarget = 'card-designer';
+                        _cropDataUrl = await readAsDataUrl(file);
+                        photoState.takenAt = new Date();
+                        try { _cropBitmap = await createImageBitmap(file); }
+                        catch (e) { _cropBitmap = await loadImageElement(_cropDataUrl); }
+                        openCropModal();
+                        const bw = Math.round(Math.sqrt(0.75) * _cropStage.w);
+                        setCropBox(Math.round((_cropStage.w - bw) / 2), Math.round((_cropStage.h - bw * 9 / 7) / 2), bw);
+                        confirmCrop();
+                        closeCropModal();
+                        const url = photoState.croppedDataUrl || '';
+                        cropTarget = savedTarget;
+                        currentUploadedPhotoBase64 = savedBase64;
+                        photoState.ready = savedState.ready;
+                        photoState.croppedDataUrl = savedState.croppedDataUrl;
+                        photoState.takenAt = savedState.takenAt;
+                        photoState.ageDeclared = savedState.ageDeclared;
+                        if (document.getElementById('cd-cardPhoto')) document.getElementById('cd-cardPhoto').src = savedCardPhoto;
+                        if (document.getElementById('cd-photoPreviewThumb')) document.getElementById('cd-photoPreviewThumb').src = savedThumb;
+                        resolve(url);
+                    } catch (err) { resolve(''); }
+                }, 'image/jpeg', 0.92);
+            });
+        }
+        async function _hydrateSeq(records) {
+            for (const rec of records) {
+                if (_demoHydrationPaused) return;
+                if (_examplePhotoCache[rec.id]) { rec.photoUrl = _examplePhotoCache[rec.id]; continue; }
+                const url = await generateExamplePhoto(rec);
+                if (url) { _examplePhotoCache[rec.id] = url; rec.photoUrl = url; }
+                _syncPhotoImgs(rec.id, url);
+                await new Promise(r => setTimeout(r, 0));
+            }
+        }
+        function hydrateDemoPhotos() {
+            if (_demoHydrationPaused) return;
+            (async () => {
+                await _militantsReady;
+                await candidatesReady;
+                const mMap = {};
+                generatedMilitantsList.forEach(m => { mMap[m.id] = m; });
+                const isExternal = (u) => !u || /randomuser|unsplash/i.test(u);
+                const cNeed = candidatesList.filter(c => isExternal(c.photoUrl));
+                const neededMids = [...new Set(cNeed.map(c => c.id))].map(id => mMap[id]).filter(Boolean).filter(m => isExternal(m.photoUrl));
+                await _hydrateSeq(neededMids);
+                candidatesList.forEach(c => {
+                    if (isExternal(c.photoUrl)) {
+                        const m = mMap[c.id];
+                        if (m && m.photoUrl) c.photoUrl = m.photoUrl;
+                    }
+                });
+                await _hydrateSeq(candidatesList.filter(c => isExternal(c.photoUrl)));
+                await _hydrateSeq(generatedMilitantsList.filter(m => isExternal(m.photoUrl)));
+            })();
+        }
 
         // Generate Custom Sequence Membership Number
         function generateMembershipId(wilayaName) {
