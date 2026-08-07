@@ -581,6 +581,24 @@
             #militants-table tbody tr.hidden { display:none !important; }
             #db-cand-sheet-workspace > .card-dark > .flex.items-center.gap-3 { flex-wrap:wrap; justify-content:center; }
         }
+
+        /* ===== PHOTO CROP MODAL ===== */
+        .photo-modal-card { background:linear-gradient(160deg,#0a1a0e,#143718); border:1px solid rgba(255,255,255,0.1); border-radius:24px; padding:20px; width:100%; max-width:520px; }
+        #crop-stage { position:relative; touch-action:none; user-select:none; -webkit-user-select:none; }
+        #crop-stage img { pointer-events:none; }
+        #crop-box { position:absolute; border:2px solid #f59e0b; background:rgba(245,158,11,0.15); touch-action:none; cursor:move; }
+        #crop-box .crop-handle { position:absolute; width:14px; height:14px; background:#f59e0b; border:2px solid #143718; border-radius:50%; box-sizing:border-box; }
+        #crop-box .crop-handle[data-h="tl"] { top:-7px; left:-7px; cursor:nwse-resize; }
+        #crop-box .crop-handle[data-h="tr"] { top:-7px; right:-7px; cursor:nesw-resize; }
+        #crop-box .crop-handle[data-h="bl"] { bottom:-7px; left:-7px; cursor:nesw-resize; }
+        #crop-box .crop-handle[data-h="br"] { bottom:-7px; right:-7px; cursor:nwse-resize; }
+        #crop-box .crop-handle[data-h="t"] { top:-7px; left:50%; margin-left:-7px; cursor:ns-resize; }
+        #crop-box .crop-handle[data-h="b"] { bottom:-7px; left:50%; margin-left:-7px; cursor:ns-resize; }
+        #crop-box .crop-handle[data-h="l"] { left:-7px; top:50%; margin-top:-7px; cursor:ew-resize; }
+        #crop-box .crop-handle[data-h="r"] { right:-7px; top:50%; margin-top:-7px; cursor:ew-resize; }
+        #photo-age-checkbox { accent-color:#10b981; }
+        .photo-status-error { color:#fda4af; background:rgba(220,38,38,0.12); border:1px solid rgba(220,38,38,0.25); border-radius:12px; padding:10px 14px; font-size:11px; font-weight:700; }
+        .photo-status-ok { color:#86efac; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:10px 14px; font-size:11px; font-weight:700; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col text-slate-200 antialiased">
@@ -968,6 +986,7 @@
                             <h4 class="text-xs font-bold text-white" data-i18n="form.photo">صورة الهوية الرقمية الرسمية</h4>
                             <p class="text-[11px] text-slate-400 leading-normal" data-i18n="form.uploadPhoto">الرجاء رفع صورة واضحة بخلفية بيضاء أو محايدة ومقاييس 3.5 × 4.5 سم للحصول على البطاقة البيومترية المطبوعة بنجاح.</p>
                             <input type="file" id="militant-photo-file" accept="image/*" onchange="handlePhotoUpload(event)" required class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-green-500/10 file:text-green-400 hover:file:bg-green-500/20 cursor-pointer" />
+                            <div id="militant-photo-status" class="hidden w-full text-right"></div>
                         </div>
                     </div>
 
@@ -3252,6 +3271,18 @@
             'form.chooseCell': 'اختر الخلية...',
             'form.chooseRole': 'اختر الصفة...',
             'form.uploadPhoto': 'انقر لرفع الصورة',
+            'photo.cropTitle': 'ضبط الإطار',
+            'photo.normHint': 'يجب أن يشغل الوجه ما بين 70٪ و 80٪ من الصورة',
+            'photo.facePct': 'الإطار: {pct}٪ من الصورة',
+            'photo.confirm': 'تأكيد الإطار',
+            'photo.retry': 'صورة أخرى',
+            'photo.ageDeclare': 'أصرّح بأن هذه الصورة حديثة (التُقطت منذ أقل من 6 أشهر)',
+            'photo.ageRecentBadge': 'صورة حديثة:',
+            'photo.tooOld': 'الصورة قديمة (التُقطت في {date}) — يجب أن تكون حديثة (أقل من 6 أشهر)',
+            'photo.lowres': 'دقة الصورة غير كافية للطباعة (مطلوب 413×531 بكسل على الأقل)',
+            'photo.bg': 'الخلفية غير مطابقة — يجب أن تكون موحّدة وخفيفة (بيضاء أو رمادية)',
+            'photo.notReady': 'يرجى رفع صورة مطابقة للمعايير والتحقق منها قبل المتابعة',
+            'photo.conform': 'الصورة مطابقة للمعايير ✓',
             'form.yes': 'نعم',
             'form.no': 'لا',
             'form.mujahid': 'مسبوق نضالي (مجاهد)',
@@ -3557,6 +3588,18 @@
             'form.chooseCell': 'Choose Cell...',
             'form.chooseRole': 'Choose Role...',
             'form.uploadPhoto': 'Click to upload photo',
+            'photo.cropTitle': 'Adjust framing',
+            'photo.normHint': 'The face must fill 70% - 80% of the image',
+            'photo.facePct': 'Frame: {pct}% of image',
+            'photo.confirm': 'Confirm crop',
+            'photo.retry': 'Choose another',
+            'photo.ageDeclare': 'I certify this photo is recent (taken less than 6 months ago)',
+            'photo.ageRecentBadge': 'Recent photo:',
+            'photo.tooOld': 'Photo is too old (taken {date}) — it must be less than 6 months old',
+            'photo.lowres': 'Resolution insufficient for printing (at least 413×531 px required)',
+            'photo.bg': 'Background not conforming — it must be uniform and light (white or gray)',
+            'photo.notReady': 'Please upload and validate a conforming photo before continuing',
+            'photo.conform': 'Photo conforms to standards ✓',
             'form.yes': 'Yes',
             'form.no': 'No',
             'form.mujahid': 'Veteran Militant (Mujahid)',
@@ -3862,6 +3905,18 @@
             'form.chooseCell': 'Choisir la cellule...',
             'form.chooseRole': 'Choisir le rôle...',
             'form.uploadPhoto': 'Cliquez pour télécharger une photo',
+            'photo.cropTitle': 'Régler le cadrage',
+            'photo.normHint': 'Le visage doit occuper 70 % à 80 % de l\'image',
+            'photo.facePct': 'Cadre : {pct} % de l\'image',
+            'photo.confirm': 'Confirmer le cadrage',
+            'photo.retry': 'Choisir une autre photo',
+            'photo.ageDeclare': 'Je certifie que cette photo est récente (prise il y a moins de 6 mois)',
+            'photo.ageRecentBadge': 'Photo récente :',
+            'photo.tooOld': 'Photo trop ancienne (prise le {date}) — elle doit dater de moins de 6 mois',
+            'photo.lowres': 'Résolution insuffisante pour l\'impression (413×531 px minimum requis)',
+            'photo.bg': 'Fond non conforme — il doit être uni et clair (blanc ou gris)',
+            'photo.notReady': 'Veuillez télécharger et valider une photo conforme avant de continuer',
+            'photo.conform': 'Photo conforme aux normes ✓',
             'form.yes': 'Oui',
             'form.no': 'Non',
             'form.mujahid': 'Ancien militant (Moudjahid)',
@@ -4139,6 +4194,7 @@
             }
           });
           try { localStorage.setItem(LANG_KEY, lang); } catch(e) {}
+          if (typeof refreshPhotoUI === 'function') refreshPhotoUI();
           document.querySelectorAll('.lang-flag').forEach(f => {
             f.classList.toggle('opacity-40', f.dataset.lang !== lang);
             f.classList.toggle('opacity-100', f.dataset.lang === lang);
@@ -6204,17 +6260,331 @@
         function handlePhotoUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
+            validateAndCropPhoto(file, { target: 'militant' });
+        }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentUploadedPhotoBase64 = e.target.result;
+        const photoState = { ready: false, croppedDataUrl: '', takenAt: null, ageDeclared: false };
+        let cropTarget = 'militant';
+        let _cropBitmap = null;
+        let _cropDataUrl = '';
+        let _cropStage = { w: 0, h: 0 };
+        let _cropBox = { x: 0, y: 0, w: 0 };
+        let _dragMode = null;
+
+        function photoI18n(key) {
+            return (translations[currentLang] && translations[currentLang][key]) || key;
+        }
+
+        function photoDateStr(d) {
+            const p = (n) => String(n).padStart(2, '0');
+            return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+        }
+
+        function readAsDataUrl(file) {
+            return new Promise((resolve, reject) => {
+                const r = new FileReader();
+                r.onload = () => resolve(r.result);
+                r.onerror = reject;
+                r.readAsDataURL(file);
+            });
+        }
+
+        function loadImageElement(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            });
+        }
+
+        function parseJpegDateTaken(dataUrl) {
+            try {
+                const raw = atob((dataUrl.split(',')[1]) || '');
+                const bytes = new Uint8Array(raw.length);
+                for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+                if (bytes[0] !== 0xFF || bytes[1] !== 0xD8) return null;
+                let off = 2;
+                while (off + 4 <= bytes.length) {
+                    if (bytes[off] !== 0xFF) break;
+                    const marker = bytes[off + 1];
+                    const len = (bytes[off + 2] << 8) | bytes[off + 3];
+                    if (marker === 0xE1) {
+                        if (bytes[off + 4] === 0x45 && bytes[off + 5] === 0x78 && bytes[off + 6] === 0x69 &&
+                            bytes[off + 7] === 0x66 && bytes[off + 8] === 0x00 && bytes[off + 9] === 0x00) {
+                            return readExifDate(bytes, off + 10);
+                        }
+                    }
+                    if (marker === 0xDA) break;
+                    off += 2 + len;
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        function readExifDate(bytes, start) {
+            try {
+                const order = String.fromCharCode(bytes[start], bytes[start + 1]);
+                const little = order === 'II';
+                const u16 = (o) => little ? (bytes[o] | (bytes[o + 1] << 8)) : ((bytes[o] << 8) | bytes[o + 1]);
+                const u32 = (o) => little ? (bytes[o] | (bytes[o + 1] << 8) | (bytes[o + 2] << 16) | (bytes[o + 3] << 24))
+                    : ((bytes[o] << 24) | (bytes[o + 1] << 16) | (bytes[o + 2] << 8) | bytes[o + 3]);
+                if (order !== 'II' && order !== 'MM') return null;
+                if (u16(start + 2) !== 0x002A) return null;
+                const ifd0 = start + u32(start + 4);
+                const count = u16(ifd0);
+                let exifPtr = null;
+                for (let i = 0; i < count; i++) {
+                    const e = ifd0 + 2 + i * 12;
+                    if (u16(e) === 0x8769) { exifPtr = start + u32(e + 8); break; }
+                }
+                if (exifPtr === null) return null;
+                const ecount = u16(exifPtr);
+                for (let i = 0; i < ecount; i++) {
+                    const e = exifPtr + 2 + i * 12;
+                    if (u16(e) === 0x9003) {
+                        const val = u32(e + 8);
+                        let s = '';
+                        for (let j = 0; j < 19; j++) s += String.fromCharCode(bytes[start + val + j]);
+                        const m = /^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})/.exec(s);
+                        if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4]), Number(m[5]), Number(m[6]));
+                        return null;
+                    }
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        function showPhotoStatus(kind, text) {
+            const inModal = !document.getElementById('photo-crop-modal').classList.contains('hidden');
+            const target = (inModal || cropTarget === 'card-designer')
+                ? document.getElementById('crop-status')
+                : document.getElementById('militant-photo-status');
+            target.className = kind === 'error' ? 'photo-status-error' : 'photo-status-ok';
+            target.textContent = text;
+        }
+
+        function backgroundIsConforming(ctx, w, h) {
+            const bandH = Math.max(4, Math.round(h * 0.08));
+            const bandW = Math.max(4, Math.round(w * 0.08));
+            const points = [];
+            const rowY = [bandH, h - bandH];
+            const colX = [bandW, w - bandW];
+            const stepX = Math.max(1, Math.round(w / 32));
+            const stepY = Math.max(1, Math.round(h / 32));
+            for (const y of rowY) { for (let x = 0; x < w; x += stepX) { points.push(ctx.getImageData(x, y, 1, 1).data); } }
+            for (const x of colX) { for (let y = 0; y < h; y += stepY) { points.push(ctx.getImageData(x, y, 1, 1).data); } }
+            let lightSum = 0, satSum = 0, minL = 255, maxL = 0;
+            for (const d of points) {
+                const mx = Math.max(d[0], d[1], d[2]);
+                const mn = Math.min(d[0], d[1], d[2]);
+                const l = (d[0] + d[1] + d[2]) / 3;
+                const s = mx === 0 ? 0 : (mx - mn) / mx;
+                lightSum += l; satSum += s;
+                if (l < minL) minL = l;
+                if (l > maxL) maxL = l;
+            }
+            const n = points.length || 1;
+            return (lightSum / n) >= 200 && (satSum / n) <= 0.35 && (maxL - minL) <= 55;
+        }
+
+        function updateCropPct() {
+            const pct = (_cropBox.w * (_cropBox.w * 9 / 7)) / (_cropStage.w * _cropStage.h) * 100;
+            const inRange = pct >= 70 && pct <= 80;
+            const el = document.getElementById('crop-pct');
+            el.textContent = photoI18n('photo.facePct').replace('{pct}', String(Math.round(pct))) + (inRange ? ' ✓' : '');
+            el.className = 'text-xs font-bold ' + (inRange ? 'text-green-300' : 'text-amber-300');
+            const btn = document.getElementById('crop-confirm-btn');
+            btn.disabled = !inRange;
+            return inRange;
+        }
+
+        function _drawCropBox() {
+            const box = document.getElementById('crop-box');
+            box.style.left = _cropBox.x + 'px';
+            box.style.top = _cropBox.y + 'px';
+            box.style.width = _cropBox.w + 'px';
+            box.style.height = Math.round(_cropBox.w * 9 / 7) + 'px';
+            box.style.display = 'block';
+        }
+
+        function setCropBox(nx, ny, nw) {
+            nw = Math.min(Math.max(nw, 20), _cropStage.w);
+            const nh = nw * 9 / 7;
+            nx = Math.min(Math.max(nx, 0), _cropStage.w - nw);
+            ny = Math.min(Math.max(ny, 0), _cropStage.h - nh);
+            _cropBox = { x: nx, y: ny, w: nw };
+            _drawCropBox();
+            updateCropPct();
+        }
+
+        function openCropModal() {
+            const modal = document.getElementById('photo-crop-modal');
+            const stage = document.getElementById('crop-stage');
+            const img = document.getElementById('crop-source-img');
+            modal.classList.remove('hidden');
+            const w = _cropBitmap.width, h = _cropBitmap.height;
+            const maxW = Math.min(window.innerWidth - 96, 520);
+            const maxH = Math.min(window.innerHeight - 260, 380);
+            const scale = Math.min(maxW / w, maxH / h, 1);
+            const dispW = Math.max(1, Math.round(w * scale));
+            const dispH = Math.max(1, Math.round(h * scale));
+            stage.style.width = dispW + 'px';
+            stage.style.height = dispH + 'px';
+            _cropStage = { w: dispW, h: dispH };
+            const bw = Math.min(dispW, dispH * 7 / 9);
+            setCropBox(Math.round((dispW - bw) / 2), Math.round((dispH - bw * 9 / 7) / 2), Math.round(bw));
+            img.src = _cropDataUrl;
+        }
+
+        function closeCropModal() {
+            document.getElementById('photo-crop-modal').classList.add('hidden');
+            _dragMode = null;
+        }
+
+        function confirmCrop() {
+            if (!updateCropPct()) return;
+            const w = _cropBitmap.width, h = _cropBitmap.height;
+            const sx = Math.round(_cropBox.x / _cropStage.w * w);
+            const sy = Math.round(_cropBox.y / _cropStage.h * h);
+            const sw = Math.round(_cropBox.w / _cropStage.w * w);
+            const sh = Math.round(sw * 9 / 7);
+            if (sw < 413 || sh < 531) { showPhotoStatus('error', photoI18n('photo.lowres')); return; }
+            const tmp = document.createElement('canvas');
+            tmp.width = sw; tmp.height = sh;
+            const tctx = tmp.getContext('2d');
+            tctx.drawImage(_cropBitmap, sx, sy, sw, sh, 0, 0, sw, sh);
+            if (!backgroundIsConforming(tctx, sw, sh)) { showPhotoStatus('error', photoI18n('photo.bg')); return; }
+            if (!photoState.takenAt && !photoState.ageDeclared) { showPhotoStatus('error', photoI18n('photo.ageDeclare')); return; }
+            const out = document.createElement('canvas');
+            out.width = 413; out.height = 531;
+            const octx = out.getContext('2d');
+            octx.drawImage(_cropBitmap, sx, sy, sw, sh, 0, 0, 413, 531);
+            photoState.croppedDataUrl = out.toDataURL('image/jpeg', 0.92);
+            photoState.ready = true;
+            currentUploadedPhotoBase64 = photoState.croppedDataUrl;
+            if (cropTarget === 'militant') {
                 const preview = document.getElementById('militant-portrait-preview');
-                preview.src = currentUploadedPhotoBase64;
+                preview.src = photoState.croppedDataUrl;
                 preview.classList.remove('hidden');
                 document.getElementById('militant-portrait-placeholder').classList.add('hidden');
+                document.getElementById('militant-photo-status').classList.add('hidden');
+            } else {
+                document.getElementById('cd-cardPhoto').src = photoState.croppedDataUrl;
+                document.getElementById('cd-photoPreviewThumb').src = photoState.croppedDataUrl;
             }
-            reader.readAsDataURL(file);
+            showPhotoStatus('ok', photoI18n('photo.conform'));
+            setTimeout(closeCropModal, 900);
         }
+
+        async function validateAndCropPhoto(file, opts) {
+            cropTarget = (opts && opts.target) || 'militant';
+            photoState.ready = false;
+            photoState.croppedDataUrl = '';
+            photoState.takenAt = null;
+            photoState.ageDeclared = false;
+            _cropDataUrl = await readAsDataUrl(file);
+            photoState.takenAt = parseJpegDateTaken(_cropDataUrl);
+            document.getElementById('photo-age-checkbox').checked = false;
+            document.getElementById('photo-age-badge').classList.add('hidden');
+            document.getElementById('photo-declaration').classList.add('hidden');
+            try { _cropBitmap = await createImageBitmap(file); }
+            catch (e) { _cropBitmap = await loadImageElement(_cropDataUrl); }
+            openCropModal();
+            if (photoState.takenAt) {
+                const ageDays = (Date.now() - photoState.takenAt.getTime()) / 86400000;
+                if (ageDays > 183) {
+                    document.getElementById('crop-confirm-btn').disabled = true;
+                    showPhotoStatus('error', photoI18n('photo.tooOld').replace('{date}', photoDateStr(photoState.takenAt)));
+                    return;
+                }
+                const badge = document.getElementById('photo-age-badge');
+                badge.textContent = photoI18n('photo.ageRecentBadge') + ' ' + photoDateStr(photoState.takenAt);
+                badge.classList.remove('hidden');
+            } else {
+                document.getElementById('photo-declaration').classList.remove('hidden');
+            }
+        }
+
+        function clamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
+
+        function initPhotoPipeline() {
+            const box = document.getElementById('crop-box');
+            const stage = document.getElementById('crop-stage');
+            box.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                const r = stage.getBoundingClientRect();
+                _dragMode = {
+                    handle: e.target.getAttribute('data-h') || '',
+                    startX: e.clientX - r.left,
+                    startY: e.clientY - r.top,
+                    box: { x: _cropBox.x, y: _cropBox.y, w: _cropBox.w }
+                };
+                box.setPointerCapture(e.pointerId);
+            });
+            box.addEventListener('pointermove', (e) => {
+                if (!_dragMode) return;
+                const r = stage.getBoundingClientRect();
+                const px = e.clientX - r.left;
+                const py = e.clientY - r.top;
+                const b0 = _dragMode.box;
+                const h0 = b0.w * 9 / 7;
+                const handle = _dragMode.handle;
+                let nx = b0.x, ny = b0.y, nw = b0.w;
+                if (!handle) {
+                    nx = clamp(b0.x + (px - _dragMode.startX), 0, _cropStage.w - b0.w);
+                    ny = clamp(b0.y + (py - _dragMode.startY), 0, _cropStage.h - h0);
+                } else {
+                    const hx = handle.indexOf('l') !== -1 ? -1 : handle.indexOf('r') !== -1 ? 1 : 0;
+                    const hy = handle.indexOf('t') !== -1 ? -1 : handle.indexOf('b') !== -1 ? 1 : 0;
+                    const right = b0.x + b0.w;
+                    const bottom = b0.y + h0;
+                    if (hx !== 0) {
+                        nw = clamp(Math.abs((hx < 0 ? right : b0.x) - px), 20, _cropStage.w);
+                    } else {
+                        nw = clamp((hy < 0 ? bottom - py : py - b0.y) * 7 / 9, 20, _cropStage.w);
+                    }
+                    const nh = nw * 9 / 7;
+                    nx = clamp(hx < 0 ? right - nw : b0.x, 0, _cropStage.w - nw);
+                    ny = clamp(hy < 0 ? bottom - nh : b0.y, 0, _cropStage.h - nh);
+                }
+                _cropBox = { x: Math.round(nx), y: Math.round(ny), w: Math.round(nw) };
+                _drawCropBox();
+                updateCropPct();
+            });
+            box.addEventListener('pointerup', () => { _dragMode = null; });
+            box.addEventListener('pointercancel', () => { _dragMode = null; });
+            document.getElementById('crop-confirm-btn').addEventListener('click', confirmCrop);
+            document.getElementById('crop-retry-btn').addEventListener('click', () => {
+                closeCropModal();
+                const input = cropTarget === 'militant' ? document.getElementById('militant-photo-file') : document.getElementById('cd-photoInput');
+                input.value = '';
+                input.click();
+            });
+            document.getElementById('photo-age-checkbox').addEventListener('change', (e) => {
+                photoState.ageDeclared = e.target.checked;
+                if (e.target.checked) document.getElementById('crop-status').classList.add('hidden');
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            initPhotoPipeline();
+        });
+
+        function refreshPhotoUI() {
+            if (!document.getElementById('photo-crop-modal').classList.contains('hidden')) updateCropPct();
+        }
+
+        window.__photoAPI = {
+            validateAndCropPhoto: validateAndCropPhoto,
+            confirmCrop: confirmCrop,
+            setCropBox: setCropBox,
+            closeCropModal: closeCropModal,
+            get photoState() { return photoState; },
+            get cropStage() { return _cropStage; },
+            get box() { return { x: _cropBox.x, y: _cropBox.y, w: _cropBox.w }; },
+            get current() { return currentUploadedPhotoBase64; },
+            parseJpegDateTaken: parseJpegDateTaken
+        };
 
         // Generate Custom Sequence Membership Number
         function generateMembershipId(wilayaName) {
@@ -6227,6 +6597,12 @@
         // STEP 1 Form Submission -> Render step 2
         function handleFormSubmit(event) {
             event.preventDefault();
+
+            if (!photoState.ready || !currentUploadedPhotoBase64) {
+                cropTarget = 'militant';
+                showPhotoStatus('error', photoI18n('photo.notReady'));
+                return;
+            }
 
             // Fetch inputs
             const lastname = document.getElementById('militant-lastname').value;
@@ -6405,9 +6781,14 @@
         function resetWizard() {
             document.getElementById('militantForm').reset();
             currentUploadedPhotoBase64 = "";
+            photoState.ready = false;
+            photoState.croppedDataUrl = "";
+            photoState.takenAt = null;
+            photoState.ageDeclared = false;
             document.getElementById('militant-portrait-preview').classList.add('hidden');
             document.getElementById('militant-portrait-preview').src = "";
             document.getElementById('militant-portrait-placeholder').classList.remove('hidden');
+            document.getElementById('militant-photo-status').classList.add('hidden');
 
             document.getElementById('step-success').classList.add('hidden');
             document.getElementById('step-register-form').classList.remove('hidden');
@@ -7219,7 +7600,7 @@
 
             if (el('cd-photoInput')) el('cd-photoInput').addEventListener('change', e => {
                 const f = e.target.files[0];
-                if (f) { const r = new FileReader(); r.onload = ev => { el('cd-cardPhoto').src = ev.target.result; el('cd-photoPreviewThumb').src = ev.target.result; }; r.readAsDataURL(f); }
+                if (f) validateAndCropPhoto(f, { target: 'card-designer' });
             });
 
             if (el('cd-resetBtn')) el('cd-resetBtn').addEventListener('click', () => {
@@ -7272,6 +7653,44 @@
     </footer>
 
     <!-- ==================== DIALOG: "FICHE D'EVOLUTION" EVALUATION MODAL ==================== -->
+    <!-- Photo validation / crop modal -->
+    <div id="photo-crop-modal" class="hidden fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="photo-modal-card space-y-4">
+            <div class="flex items-center justify-between gap-3">
+                <h4 class="text-sm font-black text-white" data-i18n="photo.cropTitle">ضبط الإطار</h4>
+                <span id="photo-age-badge" class="hidden text-[10px] font-bold text-green-300 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20"></span>
+            </div>
+            <div id="crop-stage" class="mx-auto rounded-xl overflow-hidden bg-black/50">
+                <img id="crop-source-img" class="absolute inset-0 w-full h-full object-fill select-none" draggable="false" alt="" />
+                <div id="crop-box" class="absolute" style="display:none">
+                    <span class="crop-handle" data-h="tl"></span>
+                    <span class="crop-handle" data-h="tr"></span>
+                    <span class="crop-handle" data-h="bl"></span>
+                    <span class="crop-handle" data-h="br"></span>
+                    <span class="crop-handle" data-h="t"></span>
+                    <span class="crop-handle" data-h="b"></span>
+                    <span class="crop-handle" data-h="l"></span>
+                    <span class="crop-handle" data-h="r"></span>
+                </div>
+            </div>
+            <div class="flex items-center justify-between gap-3">
+                <span id="crop-pct" class="text-xs font-bold text-white"></span>
+                <span class="text-[10px] text-slate-400" data-i18n="photo.normHint">يجب أن يشغل الوجه ما بين 70٪ و 80٪ من الصورة</span>
+            </div>
+            <div id="crop-status" class="hidden"></div>
+            <div id="photo-declaration" class="hidden">
+                <label class="flex items-start gap-2 text-[11px] text-slate-300 cursor-pointer">
+                    <input type="checkbox" id="photo-age-checkbox" class="mt-0.5" />
+                    <span data-i18n="photo.ageDeclare">أصرّح بأن هذه الصورة حديثة (التُقطت منذ أقل من 6 أشهر)</span>
+                </label>
+            </div>
+            <div class="flex gap-3 justify-end">
+                <button type="button" id="crop-retry-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 transition-all" data-i18n="photo.retry">صورة أخرى</button>
+                <button type="button" id="crop-confirm-btn" disabled class="px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-flnDark to-green-900 text-white hover:from-green-800 hover:to-green-900 disabled:opacity-40 disabled:cursor-not-allowed transition-all" data-i18n="photo.confirm">تأكيد الإطار</button>
+            </div>
+        </div>
+    </div>
+
     <div id="evaluation-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-[28px] border border-slate-200/50 shadow-[0_24px_64px_-12px_rgba(0,0,0,0.25)] max-w-2xl w-full overflow-hidden animate-scaleIn relative">
             <div class="flex h-1.5">
