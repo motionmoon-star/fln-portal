@@ -6314,6 +6314,7 @@
         let _cropStage = { w: 0, h: 0 };
         let _cropBox = { x: 0, y: 0, w: 0 };
         let _dragMode = null;
+        let _cropCloseTimer = null;
 
         function photoI18n(key) {
             return (translations[currentLang] && translations[currentLang][key]) || key;
@@ -6482,6 +6483,7 @@
         }
 
         function closeCropModal() {
+            if (_cropCloseTimer) { clearTimeout(_cropCloseTimer); _cropCloseTimer = null; }
             document.getElementById('photo-crop-modal').classList.add('hidden');
             _dragMode = null;
         }
@@ -6518,7 +6520,7 @@
                 document.getElementById('cd-photoPreviewThumb').src = photoState.croppedDataUrl;
             }
             showPhotoStatus('ok', photoI18n('photo.conform'));
-            setTimeout(closeCropModal, 900);
+            _cropCloseTimer = setTimeout(closeCropModal, 900);
         }
 
         async function validateAndCropPhoto(file, opts) {
