@@ -4,31 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>البوابة الرقمية لحزب جبهة التحرير الوطني - رقمنة الهياكل والمناضلين</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="tailwind.css">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        indigo: { 900: '#0a1a0e', 800: '#143718', 700: '#1e5631' },
-                        flnGreen: '#006233',
-                        flnRed: '#D2143A',
-                        flnGold: '#f59e0b',
-                        flnDark: '#143718',
-                        flnGoldDark: '#d97706'
-                    },
-                    fontFamily: {
-                        cairo: ['Cairo', 'sans-serif'],
-                        amiri: ['Amiri', 'serif']
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -460,6 +440,7 @@
         .db-qr img, .db-qr canvas { width:48px !important; height:48px !important; border-radius:4px; image-rendering:pixelated; }
         @media print { .cd-id-card-aspect { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; background-size:cover !important; background-position:center !important; } }
         @media print { .print-card { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; background-size:cover !important; background-position:center !important; } }
+        @media (max-width:640px) { .print-card { width:100% !important; height:auto !important; aspect-ratio:600/340; } }
         .kesma-group-header td { background: rgba(0,98,51,0.12); }
         .kesma-group-header:hover td { background: rgba(0,98,51,0.18); }
         @media print {
@@ -558,6 +539,47 @@
             .onb-step p { font-size:10px; }
             .onb-footer { padding:10px 24px 14px; }
             .onb-start-btn { padding:10px 24px; }
+        }
+
+        /* ===== MOBILE: militant & candidate tables -> cards (< 640px) ===== */
+        @media (max-width:640px) {
+            #militants-table thead, #candidates-table thead { display:none; }
+            #militants-table tbody, #militants-table tbody tr, #militants-table tbody td,
+            #candidates-table tbody, #candidates-table tbody tr, #candidates-table tbody td { display:block; box-sizing:border-box; }
+            #militants-table tbody tr, #candidates-table tbody tr {
+                display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px;
+                margin:0 0 12px; padding:10px;
+                border:1px solid rgba(255,255,255,0.1) !important;
+                border-radius:16px; background:rgba(255,255,255,0.03);
+                box-shadow:0 2px 12px rgba(0,0,0,0.25);
+            }
+            #militants-table tbody td, #candidates-table tbody td {
+                border:none !important; padding:4px; width:calc(50% - 4px); text-align:right;
+            }
+            #militants-table tbody td::before, #candidates-table tbody td::before {
+                content:attr(data-label);
+                display:block; margin-bottom:2px;
+                font-size:9px; font-weight:700; color:#94a3b8;
+            }
+            #militants-table tbody td:nth-child(1), #candidates-table tbody td:nth-child(1) { order:1; flex:none; width:auto; }
+            #militants-table tbody td:nth-child(3), #candidates-table tbody td:nth-child(3) { order:2; flex:1 1 0; width:auto; min-width:0; }
+            #militants-table tbody td:nth-child(9), #candidates-table tbody td:nth-child(9) { order:3; flex:none; width:auto; }
+            #militants-table tbody td:nth-child(2), #militants-table tbody td:nth-child(4),
+            #militants-table tbody td:nth-child(5), #militants-table tbody td:nth-child(6),
+            #militants-table tbody td:nth-child(7), #militants-table tbody td:nth-child(8),
+            #militants-table tbody td:nth-child(10), #militants-table tbody td:nth-child(11),
+            #militants-table tbody td:nth-child(12), #militants-table tbody td:nth-child(13),
+            #candidates-table tbody td:nth-child(2), #candidates-table tbody td:nth-child(4),
+            #candidates-table tbody td:nth-child(5), #candidates-table tbody td:nth-child(6),
+            #candidates-table tbody td:nth-child(7), #candidates-table tbody td:nth-child(8),
+            #candidates-table tbody td:nth-child(10), #candidates-table tbody td:nth-child(11) { order:4; }
+            #militants-table tbody td:nth-child(1)::before, #militants-table tbody td:nth-child(3)::before,
+            #militants-table tbody td:nth-child(9)::before, #candidates-table tbody td:nth-child(1)::before,
+            #candidates-table tbody td:nth-child(3)::before, #candidates-table tbody td:nth-child(9)::before,
+            #militants-table tbody td[colspan]::before, #candidates-table tbody td[colspan]::before { content:none; }
+            #militants-table tbody td[colspan], #candidates-table tbody td[colspan] { width:100% !important; order:0; padding:8px !important; }
+            #militants-table tbody tr.hidden { display:none !important; }
+            #db-cand-sheet-workspace > .card-dark > .flex.items-center.gap-3 { flex-wrap:wrap; justify-content:center; }
         }
     </style>
 </head>
@@ -1366,7 +1388,7 @@
                         </select>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-right text-xs">
+                        <table id="militants-table" class="w-full text-right text-xs">
                             <thead class="bg-amber-500 text-[#143718] border-b border-amber-400 uppercase font-black">
                                 <tr>
                                     <th class="p-4" data-i18n="db.tablePhoto">الصورة</th>
@@ -1543,7 +1565,7 @@
                         </select>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-right text-xs">
+                        <table id="candidates-table" class="w-full text-right text-xs">
                             <thead class="bg-white/5 text-slate-300 border-b border-white/5 uppercase font-bold">
                                 <tr>
                                     <th class="p-4" data-i18n="db.tablePhoto">الصورة</th>
@@ -5434,17 +5456,17 @@
                 ? '<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20"><span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> مسجل</span>'
                 : '<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20"><span class="w-2 h-2 rounded-full bg-slate-400"></span> ' + c.status + '</span>';
             return '<tr class="hover:bg-white/5 transition border-b border-white/5">'
-                + '<td class="p-4"><img src="' + (c.photoUrl || '') + '" class="w-10 h-12 object-cover rounded-lg border border-white/20 shadow-sm" onerror="this.onerror=null;this.style.display=\'none\'" /></td>'
-                + '<td class="p-4 font-mono font-bold text-white">' + (c.id || '-') + '</td>'
-                + '<td class="p-4"><div class="font-extrabold text-white">' + c.lastname + ' ' + c.firstname + '</div></td>'
-                + '<td class="p-4 text-slate-300">' + (c.dob || '-') + '<br><span class="text-[10px] text-slate-400">' + (c.pob || '') + '</span></td>'
-                + '<td class="p-4"><span class="font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded">' + c.wilaya + '</span></td>'
-                + '<td class="p-4 text-slate-300">' + c.daira + '</td>'
-                + '<td class="p-4 text-slate-300">' + (c.kesma || '-') + '</td>'
-                + '<td class="p-4 font-mono text-slate-300">' + c.phone + '</td>'
-                + '<td class="p-4">' + statusBadge + '</td>'
-                + '<td class="p-4 text-center"><img class="db-qr-img" style="width:48px;height:48px;border-radius:4px;border:1px solid rgba(255,255,255,0.2);image-rendering:pixelated;background:white;" data-qr-id="' + c.id + '" alt="QR" /></td>'
-                + '<td class="p-4 text-center"><button onclick="openCandidateForm(\'' + c.id + '\')" title="عرض استمارة المترشح" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-500/40 transition-all"><i class="fa-regular fa-eye"></i></button></td>'
+                + '<td class="p-4" data-label="الصورة"><img src="' + (c.photoUrl || '') + '" class="w-10 h-12 object-cover rounded-lg border border-white/20 shadow-sm" onerror="this.onerror=null;this.style.display=\'none\'" /></td>'
+                + '<td class="p-4 font-mono font-bold text-white" data-label="الرقم">' + (c.id || '-') + '</td>'
+                + '<td class="p-4" data-label="اللقب والاسم"><div class="font-extrabold text-white">' + c.lastname + ' ' + c.firstname + '</div></td>'
+                + '<td class="p-4 text-slate-300" data-label="تاريخ ومكان الازدياد">' + (c.dob || '-') + '<br><span class="text-[10px] text-slate-400">' + (c.pob || '') + '</span></td>'
+                + '<td class="p-4" data-label="الولاية"><span class="font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded">' + c.wilaya + '</span></td>'
+                + '<td class="p-4 text-slate-300" data-label="المحافظة">' + c.daira + '</td>'
+                + '<td class="p-4 text-slate-300" data-label="القسمة">' + (c.kesma || '-') + '</td>'
+                + '<td class="p-4 font-mono text-slate-300" data-label="رقم الهاتف">' + c.phone + '</td>'
+                + '<td class="p-4" data-label="الحالة">' + statusBadge + '</td>'
+                + '<td class="p-4 text-center" data-label="QR"><img class="db-qr-img" style="width:48px;height:48px;border-radius:4px;border:1px solid rgba(255,255,255,0.2);image-rendering:pixelated;background:white;" data-qr-id="' + c.id + '" alt="QR" /></td>'
+                + '<td class="p-4 text-center" data-label="الاستمارة"><button onclick="openCandidateForm(\'' + c.id + '\')" title="عرض استمارة المترشح" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-500/40 transition-all"><i class="fa-regular fa-eye"></i></button></td>'
                 + '</tr>';
         }
         function _fh(s) { let h = 0; const str = String(s || ''); for (let i = 0; i < str.length; i++) { h = ((h << 5) - h + str.charCodeAt(i)) | 0; } return Math.abs(h); }
@@ -5935,35 +5957,35 @@
 
             const rowHtml = `
                 <tr class="hover:bg-white/5 transition border-b border-white/5">
-                    <td class="p-4">
+                    <td class="p-4" data-label="الصورة">
                         <img src="${m.photoUrl || flnAvatarUri(m)}" class="w-10 h-12 object-cover rounded-lg border border-white/20 shadow-sm" onerror="this.onerror=null;this.src='${flnAvatarUri(m)}'" />
                     </td>
-                    <td class="p-4 font-mono font-bold text-white">${m.id}</td>
-                    <td class="p-4">
+                    <td class="p-4 font-mono font-bold text-white" data-label="رقم العضوية">${m.id}</td>
+                    <td class="p-4" data-label="اللقب والاسم">
                         <div class="font-extrabold text-white">${m.firstname} ${m.lastname}</div>
                         <div class="text-[10px] text-white/50">${m.email}</div>
                     </td>
-                    <td class="p-4 text-white/70 font-bold">${m.wilaya}</td>
-                    <td class="p-4 text-amber-300 font-bold">${m.mohafadha}</td>
-                    <td class="p-4 text-green-300 font-bold">${m.kesma}</td>
-                    <td class="p-4">
+                    <td class="p-4 text-white/70 font-bold" data-label="الولاية">${m.wilaya}</td>
+                    <td class="p-4 text-amber-300 font-bold" data-label="المحافظة">${m.mohafadha}</td>
+                    <td class="p-4 text-green-300 font-bold" data-label="القسمة">${m.kesma}</td>
+                    <td class="p-4" data-label="الخلية / المنصب">
                         <div class="font-bold text-white text-sm">${m.cell || '—'}</div>
                         <div class="mt-1">${roleBadge}</div>
                     </td>
-                    <td class="p-4">
+                    <td class="p-4" data-label="تاريخ الميلاد ومكانه">
                         <div class="font-bold text-white">${m.dob.split('-').reverse().join('/')}</div>
                         <div class="text-[10px] text-white/50">بـ ${m.pob}</div>
                     </td>
-                    <td class="p-4">${statusBadge}</td>
-                    <td class="p-4 font-bold text-white/70">${m.joinDate.split('-').reverse().join('/')}</td>
-                    <td class="p-4">
+                    <td class="p-4" data-label="الحالة النشطة">${statusBadge}</td>
+                    <td class="p-4 font-bold text-white/70" data-label="تاريخ الانتساب">${m.joinDate.split('-').reverse().join('/')}</td>
+                    <td class="p-4" data-label="التأثير والترشيح">
                         <div class="font-bold text-white">استقطاب: <span class="text-green-400 font-extrabold">${m.influenceCount}</span></div>
                         <div class="text-[10px] text-white/50">${m.competence}</div>
                     </td>
-                    <td class="p-4 text-center">
+                    <td class="p-4 text-center" data-label="QR">
                         <img class="db-qr-img" style="width:48px;height:48px;border-radius:4px;border:1px solid rgba(255,255,255,0.2);image-rendering:pixelated;background:white;" data-qr-id="${m.id}" alt="QR" />
                     </td>
-                    <td class="p-4 text-center">
+                    <td class="p-4 text-center" data-label="تقييم">
                         <button onclick="openEvaluationModal('${m.id}')" class="bg-gradient-to-r from-flnDark to-green-900 text-white hover:from-green-800 hover:to-green-900 font-extrabold text-[10px] px-3 py-2 rounded-lg transition-all shadow-md flex items-center justify-center gap-1.5 mx-auto">
                             <i class="fa-solid fa-graduation-cap text-flnGold"></i>
                             <span>تقييم / Fiche</span>
