@@ -396,6 +396,8 @@
         }
         .db-tab-btn:hover { background:rgba(10,31,16,0.7); color:white; border-color:rgba(0,98,51,0.4); transform:translateY(-2px); }
         .db-tab-active { background:rgba(0,98,51,0.2) !important; color:white !important; border-color:rgba(0,98,51,0.5) !important; box-shadow:0 0 20px rgba(0,98,51,0.15); }
+        .db-tab-locked { opacity:0.45; cursor:not-allowed; }
+        .db-tab-locked:hover { background:rgba(10,31,16,0.5); color:rgba(255,255,255,0.6); border-color:rgba(255,255,255,0.1); transform:none; }
         .db-select, .db-input {
             width:100%; font-size:0.75rem; font-weight:600;
             background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
@@ -3153,6 +3155,7 @@
         // Central Application Database Session State
         let dbSessionUnlocked = false;
         let activeAdminScope = { wilaya: "", daira: "", kesma: "" };
+        let activeAdminLevel = '';
 
         const _fns = ["محمد","أحمد","علي","عمر","خالد","عبد الله","إبراهيم","يوسف","سعيد","نور الدين","بلال","عمار","نبيل","جمال","كريم","هشام","مراد","عبد الرحمن","مصطفى","محسن","عادل","سمير","رشيد","توفيق","وليد","حسان","أمين","فؤاد","ميلود","ناصر"];
         const _fnsF = ["فاطمة","أمينة","سارة","زهرة","ليلى","خديجة","آمال","نورة","فوزية","أسماء","سمية","مريم","حليمة","نادية","جميلة"];
@@ -3315,6 +3318,7 @@
             'db.password': 'كلمة المرور',
             'db.loginBtn': 'دخول',
             'db.logoutBtn': 'خروج',
+            'db.closeSessionFirst': 'أغلق الجلسة الحالية أولاً للدخول إلى مستوى آخر',
             'db.searchPlaceholder': 'بحث عن مناضل...',
             'db.filter': 'تصفية',
             'db.total': 'المجموع',
@@ -3632,6 +3636,7 @@
             'db.password': 'Password',
             'db.loginBtn': 'Login',
             'db.logoutBtn': 'Logout',
+            'db.closeSessionFirst': 'Close the current session to access another level',
             'db.searchPlaceholder': 'Search militant...',
             'db.filter': 'Filter',
             'db.total': 'Total',
@@ -3949,6 +3954,7 @@
             'db.password': 'Mot de passe',
             'db.loginBtn': 'Connexion',
             'db.logoutBtn': 'Déconnexion',
+            'db.closeSessionFirst': 'Fermez la session en cours pour accéder à un autre niveau',
             'db.searchPlaceholder': 'Rechercher un militant...',
             'db.filter': 'Filtrer',
             'db.total': 'Total',
@@ -4506,6 +4512,7 @@
 
         // ===== DB FORM TAB SWITCHING =====
         function showDbForm(type) {
+            if (dbSessionUnlocked && type !== activeAdminLevel) { showToast(photoI18n('db.closeSessionFirst')); return; }
             ['kesma','mohafadha','bureau','candidates'].forEach(t => {
                 const el = document.getElementById('db-form-' + t);
                 if (el) el.classList.add('hidden');
@@ -4514,6 +4521,43 @@
             });
             document.getElementById('db-form-' + type).classList.remove('hidden');
             document.getElementById('db-tab-' + type).classList.add('db-tab-active');
+        }
+
+        const DB_TAB_LEVELS = { kesma:'fa-sitemap', mohafadha:'fa-building-columns', bureau:'fa-gears', candidates:'fa-person-rays' };
+
+        function refreshDbTabLockState() {
+            const msg = photoI18n('db.closeSessionFirst');
+            Object.keys(DB_TAB_LEVELS).forEach(function(lv){
+                const btn = document.getElementById('db-tab-' + lv);
+                if (!btn) return;
+                const ic = btn.querySelector('i');
+                if (dbSessionUnlocked && lv !== activeAdminLevel) {
+                    btn.classList.add('db-tab-locked');
+                    btn.title = msg;
+                    if (ic) ic.className = 'fa-solid fa-lock';
+                } else {
+                    btn.classList.remove('db-tab-locked');
+                    btn.title = '';
+                    if (ic) ic.className = 'fa-solid ' + DB_TAB_LEVELS[lv];
+                }
+            });
+        }
+
+        function showToast(msg) {
+            let t = document.getElementById('db-lock-toast');
+            if (!t) {
+                t = document.createElement('div');
+                t.id = 'db-lock-toast';
+                t.style.cssText = 'position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:99999;background:rgba(10,31,16,0.95);border:1px solid rgba(0,98,51,0.5);color:#fff;font-size:0.75rem;font-weight:700;padding:0.6rem 1.1rem;border-radius:1rem;box-shadow:0 10px 30px rgba(0,0,0,0.45);max-width:90vw;text-align:center;pointer-events:none;opacity:0;transition:opacity 0.3s ease;';
+                document.body.appendChild(t);
+            }
+            t.textContent = msg;
+            t.style.opacity = '1';
+            clearTimeout(t._tm);
+            t._tm = setTimeout(function(){
+                t.style.opacity = '0';
+                setTimeout(function(){ if (t && t.parentNode) t.parentNode.removeChild(t); }, 350);
+            }, 2500);
         }
 
         // ===== MOHAFADHA LOGIN =====
@@ -4534,6 +4578,7 @@
 
         function handleMohafadhaLogin(event) {
             event.preventDefault();
+            if (dbSessionUnlocked && activeAdminLevel !== 'mohafadha') { showToast(photoI18n('db.closeSessionFirst')); return; }
             _scopedFilterKesma = '';
             const wilaya = document.getElementById('moh-login-wilaya').value;
             const daira = document.getElementById('moh-login-daira').value;
@@ -4548,6 +4593,7 @@
             if (infoDaira) infoDaira.innerText = daira;
             if (infoKesma) infoKesma.innerText = 'جميع القسمات';
             dbSessionUnlocked = true;
+            activeAdminLevel = 'mohafadha';
             activeAdminScope = { wilaya, daira, kesma: '' };
             _bureauFilter = { wilaya: '', mohafadha: '', kesma: '', cell: '' };
             const subtabs = document.getElementById('db-bureau-subtabs');
@@ -4580,6 +4626,7 @@
             if (scopeBadge) scopeBadge.classList.add('hidden');
             if (kesmaLabel) kesmaLabel.classList.add('hidden');
             switchDbBureauView('militants');
+            refreshDbTabLockState();
         }
 
         // ===== Configure which sub-tabs are visible for the current access level =====
@@ -5355,6 +5402,7 @@
         // ===== DB Bureau Card Designer (Biometric) =====
         function handleBureauLogin(event) {
             event.preventDefault();
+            if (dbSessionUnlocked && activeAdminLevel !== 'bureau') { showToast(photoI18n('db.closeSessionFirst')); return; }
             _scopedFilterKesma = '';
             const frm = document.getElementById('db-form-bureau');
             if (frm) frm.classList.add('hidden');
@@ -5367,6 +5415,7 @@
             if (infoDaira) infoDaira.innerText = 'مكتب الجهاز';
             if (infoKesma) infoKesma.innerText = 'جميع الولايات والمحافظات';
             dbSessionUnlocked = true;
+            activeAdminLevel = 'bureau';
             activeAdminScope = { wilaya: 'الكل', daira: 'المقر المركزي', kesma: '' };
             _bureauFilter = { wilaya: '', mohafadha: '', kesma: '', cell: '' };
             renderMilitantSheetRecordsAll();
@@ -5390,6 +5439,7 @@
             if (filterRow) filterRow.classList.remove('hidden');
             if (scopeBadge) scopeBadge.classList.add('hidden');
             if (kesmaLabel) kesmaLabel.classList.add('hidden');
+            refreshDbTabLockState();
         }
 
         // ===== CANDIDATES ACCESS LOGIN =====
@@ -5467,6 +5517,9 @@
 
         function handleCandidatesLogin(event) {
             event.preventDefault();
+            if (dbSessionUnlocked && activeAdminLevel !== 'candidates') { showToast(photoI18n('db.closeSessionFirst')); return; }
+            dbSessionUnlocked = true;
+            activeAdminLevel = 'candidates';
             const wilaya = document.getElementById('cand-login-wilaya').value;
             const daira = document.getElementById('cand-login-daira').value;
             const kesma = document.getElementById('cand-login-kesma').value;
@@ -5503,6 +5556,7 @@
                 }
             }
             renderCandidateSheetRecords(wilaya, daira, kesma);
+            refreshDbTabLockState();
         }
 
         const _CAND_PAGE_SIZE = 100;
@@ -6983,6 +7037,7 @@
         // Handle Secure Admin Gateway Authentication
         function handleDbLogin(event) {
             event.preventDefault();
+            if (dbSessionUnlocked && activeAdminLevel !== 'kesma') { showToast(photoI18n('db.closeSessionFirst')); return; }
             _scopedFilterKesma = '';
 
             const selectedWilaya = document.getElementById('login-wilaya');
@@ -6993,6 +7048,7 @@
             if (!kesmaVal) return;
 
             dbSessionUnlocked = true;
+            activeAdminLevel = 'kesma';
             activeAdminScope = {
                 wilaya: selectedWilaya.value,
                 daira: selectedDaira.value,
@@ -7039,13 +7095,16 @@
             if (subtabsK) subtabsK.classList.remove('hidden');
             configureDbSubtabVisibility();
             switchDbBureauView('militants');
+            refreshDbTabLockState();
         }
 
         // Exit active admin session
         function logOutAdmin() {
             dbSessionUnlocked = false;
+            activeAdminLevel = '';
             _scopedFilterKesma = '';
             activeAdminScope = { wilaya: "", daira: "", kesma: "" };
+            refreshDbTabLockState();
             document.getElementById('login-pass').value = "";
             document.getElementById('login-wilaya').value = "";
             document.getElementById('login-daira').innerHTML = '<option value="">اختر الدائرة أولاً...</option>';
