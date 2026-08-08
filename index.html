@@ -457,7 +457,6 @@
           }
           #militants-table tbody td[colspan], #candidates-table tbody td[colspan] { width:auto !important; }
           #militants-table tbody td::before, #candidates-table tbody td::before { content:none !important; }
-          .db-detail-btn { display:none !important; }
         }
         #print-card-header, #print-card-footer { display: none; }
         @media print {
@@ -554,65 +553,52 @@
             .onb-start-btn { padding:10px 24px; }
         }
 
-        /* ===== DB TABLES: compact 2-line cards + detail (all screens) ===== */
-        #militants-table thead, #candidates-table thead { display:none; }
-        #militants-table tbody tr, #candidates-table tbody tr {
-            display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px;
-            margin:0 0 12px; padding:10px;
-            border:1px solid rgba(255,255,255,0.1) !important;
-            border-radius:16px; background:rgba(255,255,255,0.03);
-            box-shadow:0 2px 12px rgba(0,0,0,0.25);
+        /* ===== DB TABLES: aligned table (desktop) + full-detail cards (mobile) ===== */
+        #militants-table, #candidates-table { width:100%; border-collapse:collapse; }
+        #militants-table thead, #candidates-table thead { background:rgba(255,255,255,0.04); }
+        #militants-table thead th, #candidates-table thead th {
+            padding:10px 8px; font-size:11px; font-weight:700; color:#94a3b8; white-space:nowrap; text-align:right;
         }
+        #militants-table tbody tr, #candidates-table tbody tr { display:table-row; }
         #militants-table tbody td, #candidates-table tbody td {
-            border:none !important; padding:4px; box-sizing:border-box; min-width:0;
+            border:none !important; padding:8px; box-sizing:border-box; min-width:0;
         }
-        #militants-table tbody td::before, #candidates-table tbody td::before {
-            content:attr(data-label);
-            display:block; margin-bottom:2px;
-            font-size:9px; font-weight:700; color:#94a3b8;
-        }
-        /* line 1: photo + (id) + name + status/detail */
-        #militants-table tbody td:nth-child(1), #candidates-table tbody td:nth-child(1) { order:1; flex:none; }
-        #militants-table tbody td:nth-child(2) { order:2; flex:none; }
-        #militants-table tbody td:nth-child(3), #candidates-table tbody td:nth-child(3) { order:3; flex:1 1 0; }
-        #militants-table tbody td:nth-child(9), #candidates-table tbody td:nth-child(9) { order:4; flex:none; text-align:center; }
-        /* line 2: location fields (compact, one visual line) */
-        #militants-table tbody td:nth-child(4), #militants-table tbody td:nth-child(5),
-        #militants-table tbody td:nth-child(6) { order:5; flex:1 1 30%; }
-        #candidates-table tbody td:nth-child(5), #candidates-table tbody td:nth-child(6),
-        #candidates-table tbody td:nth-child(7), #candidates-table tbody td:nth-child(8) { order:5; flex:1 1 22%; }
-        /* hidden cells -> revealed by .row-open */
-        #militants-table tbody td:nth-child(7), #militants-table tbody td:nth-child(8),
-        #militants-table tbody td:nth-child(10), #militants-table tbody td:nth-child(11),
-        #militants-table tbody td:nth-child(12), #militants-table tbody td:nth-child(13),
-        #candidates-table tbody td:nth-child(2), #candidates-table tbody td:nth-child(4),
-        #candidates-table tbody td:nth-child(10), #candidates-table tbody td:nth-child(11) { display:none; }
-        #militants-table tbody tr.row-open td:nth-child(7), #militants-table tbody tr.row-open td:nth-child(8),
-        #militants-table tbody tr.row-open td:nth-child(10), #militants-table tbody tr.row-open td:nth-child(11),
-        #militants-table tbody tr.row-open td:nth-child(12), #militants-table tbody tr.row-open td:nth-child(13),
-        #candidates-table tbody tr.row-open td:nth-child(2), #candidates-table tbody tr.row-open td:nth-child(4),
-        #candidates-table tbody tr.row-open td:nth-child(10), #candidates-table tbody tr.row-open td:nth-child(11) {
-            display:block; order:6; flex:1 1 46%; min-width:120px;
-        }
-        /* kesma-group / empty / load-more banner rows */
-        #militants-table tbody td[colspan], #candidates-table tbody td[colspan] { order:0; flex:1 1 100%; width:100% !important; text-align:center; padding:8px !important; }
-        #militants-table tbody td[colspan]::before, #candidates-table tbody td[colspan]::before { content:none; }
+        #militants-table tbody td::before, #candidates-table tbody td::before { content:none; }
+        #militants-table tbody tr:nth-child(even) td, #candidates-table tbody tr:nth-child(even) td { background:rgba(255,255,255,0.02); }
+        #militants-table tbody td[colspan], #candidates-table tbody td[colspan] { text-align:center; padding:8px !important; }
         #militants-table tbody tr.hidden { display:none !important; }
-        /* no label above photo / id / name / status */
-        #militants-table tbody td:nth-child(1)::before, #militants-table tbody td:nth-child(2)::before,
-        #militants-table tbody td:nth-child(3)::before, #militants-table tbody td:nth-child(9)::before,
-        #candidates-table tbody td:nth-child(1)::before, #candidates-table tbody td:nth-child(3)::before,
-        #candidates-table tbody td:nth-child(9)::before { content:none; }
-        .db-detail-btn {
-            display:inline-flex; align-items:center; justify-content:center; gap:4px;
-            padding:4px 10px; border-radius:9999px; cursor:pointer;
-            font-size:10px; font-weight:700; white-space:nowrap;
-            color:#fcd34d; background:rgba(245,158,11,0.12);
-            border:1px solid rgba(245,158,11,0.35); transition:all .2s ease;
-        }
-        .db-detail-btn:hover { background:rgba(245,158,11,0.22); }
-        tr.row-open .db-detail-btn { color:#86efac; background:rgba(16,185,129,0.12); border-color:rgba(16,185,129,0.35); }
         @media (max-width:640px) {
+            #militants-table thead, #candidates-table thead { display:none; }
+            #militants-table tbody tr, #candidates-table tbody tr {
+                display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px;
+                margin:0 0 12px; padding:10px;
+                border:1px solid rgba(255,255,255,0.1) !important;
+                border-radius:16px; background:rgba(255,255,255,0.03);
+                box-shadow:0 2px 12px rgba(0,0,0,0.25);
+            }
+            #militants-table tbody td, #candidates-table tbody td {
+                order:5; display:block; flex:none; width:calc(50% - 5px); padding:4px;
+            }
+            #militants-table tbody td::before, #candidates-table tbody td::before {
+                content:attr(data-label);
+                display:block; margin-bottom:2px;
+                font-size:9px; font-weight:700; color:#94a3b8;
+            }
+            /* identity banner: photo + id + name + status (no labels) */
+            #militants-table tbody td:nth-child(1), #candidates-table tbody td:nth-child(1) { order:1; flex:none; width:auto; }
+            #militants-table tbody td:nth-child(2), #candidates-table tbody td:nth-child(2) { order:2; flex:none; width:auto; }
+            #militants-table tbody td:nth-child(3), #candidates-table tbody td:nth-child(3) { order:3; flex:1 1 0; width:auto; }
+            #militants-table tbody td:nth-child(9), #candidates-table tbody td:nth-child(9) { order:4; flex:none; text-align:center; width:auto; }
+            #militants-table tbody td:nth-child(1)::before, #militants-table tbody td:nth-child(2)::before,
+            #militants-table tbody td:nth-child(3)::before, #militants-table tbody td:nth-child(9)::before,
+            #candidates-table tbody td:nth-child(1)::before, #candidates-table tbody td:nth-child(2)::before,
+            #candidates-table tbody td:nth-child(3)::before, #candidates-table tbody td:nth-child(9)::before { content:none; }
+            /* full-width last cell: eval (militant 13) / fiche (candidate 11) */
+            #militants-table tbody td:nth-child(13), #candidates-table tbody td:nth-child(11) { width:100%; text-align:center; }
+            /* kesma-group / empty / load-more banner rows */
+            #militants-table tbody td[colspan], #candidates-table tbody td[colspan] { order:0; flex:1 1 100%; width:100% !important; text-align:center; padding:8px !important; }
+            #militants-table tbody td[colspan]::before, #candidates-table tbody td[colspan]::before { content:none; }
+            #militants-table tbody tr.hidden { display:none !important; }
             #db-cand-sheet-workspace > .card-dark > .flex.items-center.gap-3 { flex-wrap:wrap; justify-content:center; }
         }
 
@@ -3346,8 +3332,6 @@
             'db.tableInfluence': 'الاستقطاب',
             'db.tableQr': 'QR',
             'db.tableActions': 'الإجراءات',
-            'db.detail': 'التفاصيل',
-            'db.hide': 'إخفاء',
             'db.bureauLogin': 'مكتب الجهاز',
             'db.mohafadLogin': 'دخول مسؤول المحافظة',
             'card.title': 'طباعة البطاقة',
@@ -3665,8 +3649,6 @@
             'db.tableInfluence': 'Influence',
             'db.tableQr': 'QR',
             'db.tableActions': 'Actions',
-            'db.detail': 'Details',
-            'db.hide': 'Hide',
             'db.bureauLogin': 'Local Bureau Login',
             'db.mohafadLogin': 'Mohafadha Official Login',
             'card.title': 'Print Card',
@@ -3984,8 +3966,6 @@
             'db.tableInfluence': 'Influence',
             'db.tableQr': 'QR',
             'db.tableActions': 'Actions',
-            'db.detail': 'Détails',
-            'db.hide': 'Masquer',
             'db.bureauLogin': 'Connexion bureau local',
             'db.mohafadLogin': 'Connexion responsable mohafadha',
             'card.title': 'Imprimer la carte',
@@ -5560,7 +5540,7 @@
                 + '<td class="p-4 text-slate-300" data-label="المحافظة">' + c.daira + '</td>'
                 + '<td class="p-4 text-slate-300" data-label="القسمة">' + (c.kesma || '-') + '</td>'
                 + '<td class="p-4 font-mono text-slate-300" data-label="رقم الهاتف">' + c.phone + '</td>'
-                + '<td class="p-4" data-label="الحالة">' + statusBadge + '<button type="button" class="db-detail-btn" data-i18n="db.detail" onclick="toggleRowDetail(this.closest(\'tr\'))">' + photoI18n('db.detail') + '</button></td>'
+                + '<td class="p-4" data-label="الحالة">' + statusBadge + '</td>'
                 + '<td class="p-4 text-center" data-label="QR"><img class="db-qr-img" style="width:48px;height:48px;border-radius:4px;border:1px solid rgba(255,255,255,0.2);image-rendering:pixelated;background:white;" data-qr-id="' + c.id + '" alt="QR" /></td>'
                 + '<td class="p-4 text-center" data-label="الاستمارة"><button onclick="openCandidateForm(\'' + c.id + '\')" title="عرض استمارة المترشح" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-500/40 transition-all"><i class="fa-regular fa-eye"></i></button></td>'
                 + '</tr>';
@@ -5829,7 +5809,6 @@
                 const cells = r.querySelectorAll('td');
                 const row = Array.from(cells).map(c => {
                     const clone = c.cloneNode(true);
-                    clone.querySelectorAll('.db-detail-btn').forEach(b => b.remove());
                     return '"' + clone.textContent.trim().replace(/"/g, '""') + '"';
                 }).join(',');
                 csv += row + '\n';
@@ -6076,7 +6055,7 @@
                         <div class="font-bold text-white">${m.dob.split('-').reverse().join('/')}</div>
                         <div class="text-[10px] text-white/50">بـ ${m.pob}</div>
                     </td>
-                    <td class="p-4" data-label="الحالة النشطة">${statusBadge}<button type="button" class="db-detail-btn" data-i18n="db.detail" onclick="toggleRowDetail(this.closest('tr'))">${photoI18n('db.detail')}</button></td>
+                    <td class="p-4" data-label="الحالة النشطة">${statusBadge}</td>
                     <td class="p-4 font-bold text-white/70" data-label="تاريخ الانتساب">${m.joinDate.split('-').reverse().join('/')}</td>
                     <td class="p-4" data-label="التأثير والترشيح">
                         <div class="font-bold text-white">استقطاب: <span class="text-green-400 font-extrabold">${m.influenceCount}</span></div>
@@ -6633,17 +6612,6 @@
             get current() { return currentUploadedPhotoBase64; },
             parseJpegDateTaken: parseJpegDateTaken
         };
-
-        function toggleRowDetail(tr) {
-            if (!tr) return;
-            const open = tr.classList.toggle('row-open');
-            const btn = tr.querySelector('.db-detail-btn');
-            if (btn) {
-                const key = open ? 'db.hide' : 'db.detail';
-                btn.textContent = photoI18n(key);
-                btn.setAttribute('data-i18n', key);
-            }
-        }
 
         let _demoHydrationPaused = false;
         const _examplePhotoCache = {};
