@@ -6510,8 +6510,8 @@
             stage.style.width = dispW + 'px';
             stage.style.height = dispH + 'px';
             _cropStage = { w: dispW, h: dispH };
-            const bw = Math.min(dispW, dispH * 7 / 9);
-            setCropBox(Math.round((dispW - bw) / 2), Math.round((dispH - bw * 9 / 7) / 2), Math.round(bw));
+            const bw = Math.round(Math.sqrt(0.75 * dispW * dispH * 7 / 9));
+            setCropBox(Math.round((dispW - bw) / 2), Math.round((dispH - bw * 9 / 7) / 2), bw);
             img.src = _cropDataUrl;
         }
 
