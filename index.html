@@ -5584,6 +5584,7 @@
             _candGrouped = candidatesGroupedBySection;
             _renderCandChunk(tbody);
             setTimeout(lazyGenerateQRCodes, 100);
+            scheduleLazyPhotoHydration();
         }
         let _candRenderIndex = 0;
         let _candGrouped = false;
@@ -6075,6 +6076,7 @@
             if (lb) lb.remove();
             const tbody = document.getElementById('militants-table-body');
             _renderAllChunk(tbody);
+            scheduleLazyPhotoHydration();
         }
 
         function renderMilitantRow(tbody, m) {
@@ -6527,6 +6529,8 @@
             document.getElementById('crop-status').classList.add('hidden');
             document.getElementById('photo-declaration').classList.add('hidden');
             _dragMode = null;
+            _demoHydrationPaused = false;
+            scheduleLazyPhotoHydration();
         }
 
         function confirmCrop() {
@@ -6687,6 +6691,28 @@
                 if (img.getAttribute('data-photo-id') === String(id) && url) img.src = url;
             });
         }
+        const isExternal = (u) => !u || /randomuser|unsplash/i.test(u);
+        let _photoHydrating = false;
+        function scheduleLazyPhotoHydration() {
+            if (_demoHydrationPaused) return;
+            setTimeout(lazyHydratePhotos, 120);
+        }
+        async function lazyHydratePhotos() {
+            if (_photoHydrating || _demoHydrationPaused) return;
+            _photoHydrating = true;
+            try {
+                const imgs = document.querySelectorAll('#militants-table-body img[data-photo-id], #candidates-table-body img[data-photo-id]');
+                for (const img of imgs) {
+                    if (_demoHydrationPaused) break;
+                    const id = String(img.getAttribute('data-photo-id'));
+                    if (!id || _examplePhotoCache[id]) continue;
+                    const rec = generatedMilitantsList.find(x => String(x.id) === id) || candidatesList.find(x => String(x.id) === id);
+                    if (!rec || !isExternal(rec.photoUrl)) continue;
+                    const url = await generateExamplePhoto(rec);
+                    if (url) { _examplePhotoCache[id] = url; rec.photoUrl = url; _syncPhotoImgs(id, url); }
+                }
+            } finally { _photoHydrating = false; }
+        }
         function generateExamplePhoto(rec) {
             const id = String((rec && rec.id) || '');
             const cvs = document.createElement('canvas');
@@ -6820,7 +6846,7 @@
                     }
                 });
                 await _hydrateSeq(candidatesList.filter(c => isExternal(c.photoUrl)));
-                await _hydrateSeq(generatedMilitantsList.filter(m => isExternal(m.photoUrl)));
+                scheduleLazyPhotoHydration();
             })();
         }
 
@@ -7185,6 +7211,7 @@
             scopedList.forEach(m => renderMilitantRow(tbody, m));
 
             setTimeout(lazyGenerateQRCodes, 100);
+            scheduleLazyPhotoHydration();
         }
 
         // Dynamic sheet search filter
@@ -7475,6 +7502,7 @@
             _allGroupsCache = Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0]));
             _renderAllChunk(tbody);
             setTimeout(lazyGenerateQRCodes, 50);
+            scheduleLazyPhotoHydration();
         }
 
         // ==================== MODAL EVALUATION FILED WORKFLOWS ==================== //
