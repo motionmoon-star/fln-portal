@@ -238,6 +238,7 @@
         .card-front, .card-back {
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
+            will-change: transform;
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
@@ -3299,6 +3300,7 @@
             'photo.facePct': 'الإطار: {pct}٪ من الصورة',
             'photo.confirm': 'تأكيد الإطار',
             'photo.retry': 'صورة أخرى',
+            'photo.cancel': 'إلغاء',
             'photo.ageDeclare': 'أصرّح بأن هذه الصورة حديثة (التُقطت منذ أقل من 6 أشهر)',
             'photo.ageRecentBadge': 'صورة حديثة:',
             'photo.tooOld': 'الصورة قديمة (التُقطت في {date}) — يجب أن تكون حديثة (أقل من 6 أشهر)',
@@ -3617,6 +3619,7 @@
             'photo.facePct': 'Frame: {pct}% of image',
             'photo.confirm': 'Confirm crop',
             'photo.retry': 'Choose another',
+            'photo.cancel': 'Cancel',
             'photo.ageDeclare': 'I certify this photo is recent (taken less than 6 months ago)',
             'photo.ageRecentBadge': 'Recent photo:',
             'photo.tooOld': 'Photo is too old (taken {date}) — it must be less than 6 months old',
@@ -3935,6 +3938,7 @@
             'photo.facePct': 'Cadre : {pct} % de l\'image',
             'photo.confirm': 'Confirmer le cadrage',
             'photo.retry': 'Choisir une autre photo',
+            'photo.cancel': 'Annuler',
             'photo.ageDeclare': 'Je certifie que cette photo est récente (prise il y a moins de 6 mois)',
             'photo.ageRecentBadge': 'Photo récente :',
             'photo.tooOld': 'Photo trop ancienne (prise le {date}) — elle doit dater de moins de 6 mois',
@@ -4576,7 +4580,7 @@
             }
         }
 
-        function handleMohafadhaLogin(event) {
+        async function handleMohafadhaLogin(event) {
             event.preventDefault();
             if (dbSessionUnlocked && activeAdminLevel !== 'mohafadha') { showToast(photoI18n('db.closeSessionFirst')); return; }
             _scopedFilterKesma = '';
@@ -4599,6 +4603,7 @@
             const subtabs = document.getElementById('db-bureau-subtabs');
             if (subtabs) subtabs.classList.remove('hidden');
             configureDbSubtabVisibility();
+            await _militantsReady;
             renderMilitantSheetRecords();
             populateBureauFilterWilayas();
             const wSel = document.getElementById('bureau-filter-wilaya');
@@ -5400,7 +5405,7 @@
         }
 
         // ===== DB Bureau Card Designer (Biometric) =====
-        function handleBureauLogin(event) {
+        async function handleBureauLogin(event) {
             event.preventDefault();
             if (dbSessionUnlocked && activeAdminLevel !== 'bureau') { showToast(photoI18n('db.closeSessionFirst')); return; }
             _scopedFilterKesma = '';
@@ -5418,6 +5423,7 @@
             activeAdminLevel = 'bureau';
             activeAdminScope = { wilaya: 'الكل', daira: 'المقر المركزي', kesma: '' };
             _bureauFilter = { wilaya: '', mohafadha: '', kesma: '', cell: '' };
+            await _militantsReady;
             renderMilitantSheetRecordsAll();
             const subtabs = document.getElementById('db-bureau-subtabs');
             if (subtabs) subtabs.classList.remove('hidden');
@@ -6518,6 +6524,8 @@
         function closeCropModal() {
             if (_cropCloseTimer) { clearTimeout(_cropCloseTimer); _cropCloseTimer = null; }
             document.getElementById('photo-crop-modal').classList.add('hidden');
+            document.getElementById('crop-status').classList.add('hidden');
+            document.getElementById('photo-declaration').classList.add('hidden');
             _dragMode = null;
         }
 
@@ -6644,6 +6652,11 @@
             document.getElementById('photo-age-checkbox').addEventListener('change', (e) => {
                 photoState.ageDeclared = e.target.checked;
                 if (e.target.checked) document.getElementById('crop-status').classList.add('hidden');
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !document.getElementById('photo-crop-modal').classList.contains('hidden')) {
+                    closeCropModal();
+                }
             });
         }
         document.addEventListener('DOMContentLoaded', function() {
@@ -7035,7 +7048,7 @@
         // ==================== ADMINISTRATIVE DATABASE HANDLERS ==================== //
         
         // Handle Secure Admin Gateway Authentication
-        function handleDbLogin(event) {
+        async function handleDbLogin(event) {
             event.preventDefault();
             if (dbSessionUnlocked && activeAdminLevel !== 'kesma') { showToast(photoI18n('db.closeSessionFirst')); return; }
             _scopedFilterKesma = '';
@@ -7079,6 +7092,7 @@
             if (dSelK) dSelK.classList.add('hidden');
             if (kSelK) kSelK.classList.add('hidden');
             if (cSelK) cSelK.classList.remove('hidden');
+            await _militantsReady;
             populateBureauFilterCells();
             if (scopeBadge) {
                 document.getElementById('bureau-scope-name').innerText = activeAdminScope.kesma;
@@ -7140,7 +7154,8 @@
         }
 
         // Render Sheets simulated table records (Scoped to authenticated Kesma only)
-        function renderMilitantSheetRecords() {
+        async function renderMilitantSheetRecords() {
+            await _militantsReady;
             _scopedFilterKesma = '';
             const tbody = document.getElementById('militants-table-body');
             tbody.innerHTML = "";
@@ -7416,7 +7431,8 @@
             });
             if (_bureauFilter.cell && cells.includes(_bureauFilter.cell)) sel.value = _bureauFilter.cell;
         }
-        function applyBureauFilter() {
+        async function applyBureauFilter() {
+            await _militantsReady;
             populateBureauFilterCells();
             let filtered = generatedMilitantsList;
             const isMoView = activeAdminScope.daira && activeAdminScope.daira !== 'المقر المركزي';
@@ -7884,11 +7900,14 @@
 
     <!-- ==================== DIALOG: "FICHE D'EVOLUTION" EVALUATION MODAL ==================== -->
     <!-- Photo validation / crop modal -->
-    <div id="photo-crop-modal" class="hidden fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div id="photo-crop-modal" class="hidden fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onclick="if(event.target===this)closeCropModal()">
         <div class="photo-modal-card space-y-4">
             <div class="flex items-center justify-between gap-3">
                 <h4 class="text-sm font-black text-white" data-i18n="photo.cropTitle">ضبط الإطار</h4>
-                <span id="photo-age-badge" class="hidden text-[10px] font-bold text-green-300 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20"></span>
+                <div class="flex items-center gap-2">
+                    <span id="photo-age-badge" class="hidden text-[10px] font-bold text-green-300 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20"></span>
+                    <button type="button" id="crop-close-btn" onclick="closeCropModal()" class="w-8 h-8 rounded-full bg-white/10 border border-white/15 text-slate-300 hover:bg-white/20 hover:text-white flex items-center justify-center transition-all text-sm" title="إلغاء" aria-label="إلغاء"><i class="fa-solid fa-xmark"></i></button>
+                </div>
             </div>
             <div id="crop-stage" class="mx-auto rounded-xl overflow-hidden bg-black/50">
                 <img id="crop-source-img" class="absolute inset-0 w-full h-full object-fill select-none" draggable="false" alt="" />
