@@ -500,6 +500,19 @@
           body.printing-cand-form #cand-form-modal .bg-gradient-to-r { border-radius: 0 !important; }
           body.printing-cand-form #cand-form-modal button { display: none !important; }
           body.printing-cand-form .nav-bar, body.printing-cand-form .nav-pills, body.printing-cand-form footer, body.printing-cand-form .db-nav { display: none !important; }
+          body.printing-chakwa * { visibility: hidden; }
+          body.printing-chakwa #tab-candidate { visibility: visible !important; position: static !important; }
+          body.printing-chakwa #tab-candidate, body.printing-chakwa #tab-candidate * { visibility: visible !important; }
+          body.printing-chakwa #tab-candidate .card-dark { box-shadow: none !important; border: 1px solid #ddd !important; border-radius: 0 !important; background: white !important; }
+          body.printing-chakwa #tab-candidate .text-amber-400 { color: #b45309 !important; }
+          body.printing-chakwa #tab-candidate .text-slate-300 { color: #475569 !important; }
+          body.printing-chakwa #tab-candidate .text-white { color: #000 !important; }
+          body.printing-chakwa #tab-candidate .bg-white\\/5 { background: #f8fafc !important; }
+          body.printing-chakwa #tab-candidate .border-amber-500\\/20 { border-color: #fcd34d !important; }
+          body.printing-chakwa #tab-candidate .input-dark { background: transparent !important; border-color: #94a3b8 !important; color: #000 !important; }
+          body.printing-chakwa #tab-candidate .btn-pill { display: none !important; }
+          body.printing-chakwa .nav-bar, body.printing-chakwa .nav-pills, body.printing-chakwa .intro-section,
+          body.printing-chakwa footer, body.printing-chakwa .db-nav, body.printing-chakwa .db-subnav { display: none !important; }
         }
         #demo-front-qr img, #demo-front-qr canvas { display:block !important; width:30px !important; height:30px !important; }
 
@@ -2302,6 +2315,78 @@
                         </button>
                         <button type="submit" class="btn-pill btn-green-pill w-full sm:w-2/3 py-3.5 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-floppy-disk"></i><span>حفظ البيانات</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-dark rounded-[28px] p-4 md:p-6 lg:p-10 max-w-5xl mx-auto mt-6">
+                <div class="text-center mb-6 md:mb-8 border-b border-white/10 pb-4 md:pb-6">
+                    <span class="bg-green-600/15 text-green-400 border border-green-500/25 px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest inline-block mb-2 md:mb-3">شكوى المترشح</span>
+                    <h3 class="text-lg md:text-xl lg:text-2xl font-extrabold text-white font-amiri leading-snug">شكوى المترشح</h3>
+                    <p class="text-[10px] md:text-xs text-amber-400/70 mt-1 md:mt-2 font-bold">تقديم شكوى حول بيانات الترشح</p>
+                </div>
+
+                <form id="chakwaForm" onsubmit="event.preventDefault(); saveChakwaForm();" class="space-y-4 md:space-y-5">
+                    <div class="bg-white/5 border border-amber-500/20 rounded-xl p-4 md:p-5">
+                        <label class="block text-xs md:text-sm font-bold text-green-400 flex items-center gap-2 mb-2 md:mb-3">
+                            <i class="fa-solid fa-id-card"></i> رقم العضوية
+                        </label>
+                        <input type="text" id="ch-membership-id" placeholder="رقم العضوية (اختياري)" class="w-full text-xs md:text-sm input-dark font-mono tracking-wider" oninput="onChakwaMembershipInput()">
+                        <div id="ch-membership-msg" class="hidden mt-1 text-xs font-bold"></div>
+                    </div>
+
+                    <div class="bg-white/5 border border-amber-500/20 rounded-xl p-4 md:p-5 space-y-3 md:space-y-4">
+                        <h4 class="text-sm md:text-base font-black text-amber-400 border-b border-amber-500/20 pb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-user"></i> معلومات المترشح
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                            <div>
+                                <label class="block text-[10px] md:text-xs font-bold text-slate-300 mb-1">اللقب</label>
+                                <input type="text" id="ch-lastname" placeholder="..." class="w-full text-xs md:text-sm input-dark border-b-2 border-dotted border-white/20 rounded-none bg-transparent focus:border-amber-400">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] md:text-xs font-bold text-slate-300 mb-1">الاسم</label>
+                                <input type="text" id="ch-firstname" placeholder="..." class="w-full text-xs md:text-sm input-dark border-b-2 border-dotted border-white/20 rounded-none bg-transparent focus:border-amber-400">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] md:text-xs font-bold text-slate-300 mb-1">الولاية</label>
+                            <select id="ch-wilaya" class="w-full text-xs md:text-sm input-dark border-b-2 border-dotted border-white/20 rounded-none bg-transparent focus:border-amber-400"></select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] md:text-xs font-bold text-slate-300 mb-1">موضوع الشكوى</label>
+                            <select id="ch-subject" class="w-full text-xs md:text-sm input-dark border-b-2 border-dotted border-white/20 rounded-none bg-transparent focus:border-amber-400">
+                                <option value="">...</option>
+                                <option value="بيانات خاطئة">بيانات خاطئة</option>
+                                <option value="شطب بالخطأ">شطب بالخطأ</option>
+                                <option value="استبعاد">استبعاد</option>
+                                <option value="عدم الاستدعاء">عدم الاستدعاء</option>
+                                <option value="أخرى">أخرى</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] md:text-xs font-bold text-slate-300 mb-1">تفاصيل الشكوى</label>
+                            <textarea id="ch-description" rows="4" placeholder="شرح تفاصيل الشكوى ..." class="w-full text-xs md:text-sm input-dark border-b-2 border-dotted border-white/20 rounded-none bg-transparent focus:border-amber-400"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                        <div>
+                            <label class="block text-[10px] md:text-xs font-bold text-slate-300 mb-1">الهاتف</label>
+                            <input type="tel" id="ch-phone" placeholder="..." class="w-full text-xs md:text-sm input-dark border-b-2 border-dotted border-white/20 rounded-none bg-transparent focus:border-amber-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] md:text-xs font-bold text-slate-300 mb-1">التاريخ</label>
+                            <input type="date" id="ch-date" class="w-full text-xs md:text-sm input-dark border-b-2 border-dotted border-white/20 rounded-none bg-transparent focus:border-amber-400">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                        <button type="button" onclick="printChakwaForm()" class="btn-pill btn-glass-pill w-full sm:w-1/3 py-3.5 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-print"></i><span>طباعة</span>
+                        </button>
+                        <button type="submit" class="btn-pill btn-green-pill w-full sm:w-2/3 py-3.5 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i><span>إرسال الشكوى</span>
                         </button>
                     </div>
                 </form>
@@ -5977,9 +6062,57 @@
             setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-candidate'); }, 100); }, 100);
         }
 
+        function saveChakwaForm() {
+            const fields = ['ch-membership-id','ch-lastname','ch-firstname','ch-wilaya',
+                'ch-subject','ch-description','ch-phone','ch-date'];
+            const data = {};
+            fields.forEach(id => { const el = document.getElementById(id); if (el) data[id] = el.value; });
+            data.timestamp = Date.now();
+            console.log('Chakwa data saved:', data);
+            if (typeof saveToDB === 'function') { saveToDB('chakwa', data); }
+            alert('تم إرسال الشكوى بنجاح');
+        }
+
+        function printChakwaForm() {
+            document.body.classList.add('printing-chakwa');
+            setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-chakwa'); }, 100); }, 100);
+        }
+
+        function populateChakwaWilaya() {
+            const sel = document.getElementById('ch-wilaya');
+            if (!sel) return;
+            sel.innerHTML = '';
+            rawWilayas.forEach(w => {
+                sel.innerHTML += `<option value="${w.name}" data-id="${w.id}">${w.id} - ${w.name} (${w.nameFr})</option>`;
+            });
+        }
+
+        function onChakwaMembershipInput() {
+            const val = document.getElementById('ch-membership-id').value.trim();
+            const msg = document.getElementById('ch-membership-msg');
+            const match = generatedMilitantsList.find(m => m.id === val);
+            if (match) {
+                msg.className = 'mt-1 text-xs font-bold text-green-400';
+                msg.innerHTML = '<i class="fa-solid fa-circle-check"></i> وجدنا المترشح: ' + match.lastname + ' ' + match.firstname;
+                msg.classList.remove('hidden');
+                document.getElementById('ch-lastname').value = match.lastname;
+                document.getElementById('ch-firstname').value = match.firstname;
+                if (match.tel) document.getElementById('ch-phone').value = match.tel;
+            } else if (val.length > 5) {
+                msg.className = 'mt-1 text-xs font-bold text-red-400';
+                msg.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> رقم العضوية غير موجود';
+                msg.classList.remove('hidden');
+            } else {
+                msg.classList.add('hidden');
+            }
+        }
+
         // Populate candidate wilayas on tab show
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(populateCandidateWilayas, 200);
+            setTimeout(populateChakwaWilaya, 200);
+            const chd = document.getElementById('ch-date');
+            if (chd && !chd.value) chd.value = new Date().toISOString().split('T')[0];
             buildPresentationPrototype();
         });
 
