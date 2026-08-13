@@ -1,0 +1,603 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FLN Portal — Présentation / تقديم</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  body { font-family: 'Segoe UI', Tahoma, sans-serif; }
+  body.lang-ar { font-family: 'Amiri', serif; }
+  .slide { display: none; }
+  .slide.active { display: flex; }
+  @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeSlideUp 0.6s ease both; }
+  @keyframes flashGreen { 0% { background-color: rgba(34,197,94,0.45); } 100% { background-color: transparent; } }
+  .row-new { animation: flashGreen 2.2s ease 1; }
+  @keyframes countUp { from { opacity: 0.3; } to { opacity: 1; } }
+  .pseudo-qr { background-image: repeating-linear-gradient(0deg, #111 0 2px, transparent 2px 5px), repeating-linear-gradient(90deg, #111 0 2px, transparent 2px 5px); }
+  .progress-fill { transition: width 0.45s ease; }
+</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+<!-- barre de progression -->
+<div class="fixed top-0 left-0 right-0 z-50 h-1.5 bg-slate-800">
+  <div id="progressBar" class="progress-fill h-full bg-gradient-to-r from-green-500 to-amber-400" style="width:20%"></div>
+</div>
+
+<!-- bascule langue -->
+<button id="langToggle" onclick="switchLang(currentLang === 'ar' ? 'fr' : 'ar')"
+  class="fixed top-3 right-3 z-50 bg-slate-800/90 hover:bg-slate-700 border border-slate-600 rounded-xl px-4 py-2 text-sm font-bold text-amber-300">
+  FR / ع
+</button>
+
+<!-- 5 slides (langue = bouton fixe) -->
+<main id="deck" class="min-h-screen">
+  <section id="slide1" class="slide active min-h-screen flex-col items-center justify-center px-6 py-16 bg-[radial-gradient(ellipse_at_top,rgba(34,197,94,0.15),transparent_60%)]">
+    <div class="text-center max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-bold uppercase tracking-widest text-amber-300 bg-amber-400/10 border border-amber-500/25 rounded-full px-4 py-1.5 mb-6" data-i18n="slide1.badge"></span>
+      <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 leading-tight" data-i18n="slide1.title"></h1>
+      <p class="text-slate-300 text-base md:text-lg mb-10" data-i18n="slide1.subtitle"></p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5">
+          <div id="statWilayas" class="text-3xl md:text-5xl font-black text-green-400">0</div>
+          <div class="text-xs text-slate-400 mt-1" data-i18n="stats.wilayas"></div>
+        </div>
+        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5">
+          <div id="statKesmas" class="text-3xl md:text-5xl font-black text-green-400">0</div>
+          <div class="text-xs text-slate-400 mt-1" data-i18n="stats.kesmas"></div>
+        </div>
+        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5">
+          <div id="statMilitants" class="text-3xl md:text-5xl font-black text-amber-400">0</div>
+          <div class="text-xs text-slate-400 mt-1" data-i18n="stats.militants"></div>
+        </div>
+        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5">
+          <div id="statSatisfaction" class="text-3xl md:text-5xl font-black text-amber-400">0</div>
+          <div class="text-xs text-slate-400 mt-1" data-i18n="stats.satisfaction"></div>
+        </div>
+      </div>
+      <button id="startBtn" onclick="goToSlide(1)" class="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-extrabold rounded-2xl px-8 py-4 text-lg shadow-lg shadow-green-900/40 transition" data-i18n="nav.start"></button>
+    </div>
+  </section>
+
+  <section id="slide2" class="slide min-h-screen flex-col items-center justify-center px-4 md:px-6 py-16">
+    <div class="w-full max-w-5xl mx-auto">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl md:text-4xl font-extrabold text-white mb-2" data-i18n="slide2.title"></h2>
+        <p class="text-amber-400/80 text-sm" data-i18n="slide2.subtitle"></p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6 items-start">
+        <form id="militantForm" class="bg-slate-900/70 border border-slate-700/60 rounded-3xl p-5 md:p-7 space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.wilaya"></label>
+              <select id="m-wilaya" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></select>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.mohafadha"></label>
+              <select id="m-mohafadha" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></select>
+            </div>
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.kesma"></label>
+            <select id="m-kesma" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></select>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.lastname"></label><input id="m-lastname" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.firstname"></label><input id="m-firstname" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.dob"></label><input id="m-dob" type="date" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.pob"></label><input id="m-pob" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.nin"></label><input id="m-nin" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white font-mono" dir="ltr"></div>
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.voteCard"></label><input id="m-voteCard" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white font-mono" dir="ltr"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.tel"></label><input id="m-tel" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white font-mono" dir="ltr"></div>
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.email"></label><input id="m-email" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white font-mono" dir="ltr"></div>
+          </div>
+        </form>
+
+        <div class="text-center">
+          <div id="militantCard" class="hidden mx-auto w-full max-w-sm">
+            <div class="bg-gradient-to-br from-emerald-700 to-green-900 border-2 border-amber-400/70 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+              <div class="absolute top-0 left-0 right-0 h-1 bg-amber-400"></div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-[10px] font-bold text-emerald-200 uppercase tracking-widest" data-i18n="card.membership"></span>
+                <img id="m-card-photo" class="w-14 h-16 object-cover rounded-lg border-2 border-amber-300/60 bg-slate-200" alt="" />
+              </div>
+              <div class="text-white space-y-2 text-right">
+                <div class="text-lg font-black font-amiri" id="m-card-name">—</div>
+                <div class="text-[11px] text-emerald-100"><span data-i18n="card.id"></span>: <span id="m-card-id" class="font-mono text-amber-300" dir="ltr">—</span></div>
+                <div class="text-[11px] text-emerald-100"><span data-i18n="card.dobpob"></span>: <span id="m-card-dobpob" class="text-amber-200">—</span></div>
+                <div class="mt-4 flex items-center justify-center"><div class="pseudo-qr w-16 h-16 bg-white rounded-lg"></div></div>
+              </div>
+            </div>
+          </div>
+          <button id="replayMilitant" onclick="resetMilitantDemo()" class="hidden mt-6 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 font-bold rounded-xl px-5 py-2.5 text-sm" data-i18n="nav.restart"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="slide3" class="slide min-h-screen flex-col items-center justify-center px-4 md:px-6 py-16">
+    <div class="w-full max-w-5xl mx-auto">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl md:text-4xl font-extrabold text-white mb-2" data-i18n="slide3.title"></h2>
+        <p class="text-amber-400/80 text-sm" data-i18n="slide3.subtitle"></p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6 items-start">
+        <form id="candidateForm" class="bg-slate-900/70 border border-slate-700/60 rounded-3xl p-5 md:p-7 space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.lastname"></label><input id="c-lastname" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.firstname"></label><input id="c-firstname" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.dob"></label><input id="c-dob" type="date" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.pob"></label><input id="c-pob" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="cand.marital"></label><select id="c-marital" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></select></div>
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="cand.service"></label><select id="c-service" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></select></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="cand.profession"></label><input id="c-profession" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
+            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="cand.phone"></label><input id="c-phone" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white font-mono" dir="ltr"></div>
+          </div>
+          <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="cand.mandates"></label><textarea id="c-mandates" rows="3" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></textarea></div>
+        </form>
+
+        <div class="text-center">
+          <div id="candidatePreview" class="hidden mx-auto w-full max-w-sm bg-white text-slate-900 rounded-2xl shadow-2xl overflow-hidden">
+            <div class="bg-emerald-800 text-white px-4 py-2 text-center text-xs font-black tracking-widest">FLN — 2026</div>
+            <div class="p-5 space-y-2 text-left" dir="ltr">
+              <div class="flex items-center gap-3 mb-3">
+                <img id="c-preview-photo" class="w-12 h-14 object-cover rounded border border-slate-300 bg-slate-200" alt="" />
+                <div>
+                  <div class="font-black text-sm" id="c-preview-name">—</div>
+                  <div class="text-[10px] text-slate-500" id="c-preview-dobpob">—</div>
+                </div>
+              </div>
+              <div class="text-[11px]"><span class="font-bold">Profession:</span> <span id="c-preview-prof"></span></div>
+              <div class="text-[11px]"><span class="font-bold">Tél:</span> <span id="c-preview-phone"></span></div>
+            </div>
+          </div>
+          <button id="replayCandidate" onclick="resetCandidateDemo()" class="hidden mt-6 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 font-bold rounded-xl px-5 py-2.5 text-sm" data-i18n="nav.restart"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="slide4" class="slide min-h-screen flex-col items-center justify-center px-4 md:px-6 py-16">
+    <div class="w-full max-w-5xl mx-auto">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl md:text-4xl font-extrabold text-white mb-2" data-i18n="slide4.title"></h2>
+        <p class="text-amber-400/80 text-sm" data-i18n="slide4.subtitle"></p>
+        <div class="mt-4 inline-flex items-center gap-2 bg-slate-900/70 border border-slate-700/60 rounded-full px-5 py-2">
+          <span class="text-sm text-slate-400" data-i18n="stats.militants"></span>
+          <span id="dbCounter" class="text-2xl font-black text-green-400">24,500</span>
+        </div>
+      </div>
+      <div class="flex gap-2 mb-4">
+        <button id="tabMilitants" onclick="switchDbTab('militants')" class="bg-green-600 text-white font-bold rounded-xl px-5 py-2.5 text-sm" data-i18n="db.militants"></button>
+        <button id="tabCandidates" onclick="switchDbTab('candidates')" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 font-bold rounded-xl px-5 py-2.5 text-sm" data-i18n="db.candidates"></button>
+      </div>
+      <div id="dbPanelMilitants" class="bg-slate-900/70 border border-slate-700/60 rounded-3xl overflow-hidden">
+        <table class="w-full text-sm">
+          <thead><tr class="text-slate-400 text-xs border-b border-slate-700">
+            <th class="p-3 text-right" data-i18n="db.membershipId"></th>
+            <th class="p-3 text-right">Nom</th>
+            <th class="p-3 text-right" data-i18n="db.wilaya"></th>
+            <th class="p-3 text-right" data-i18n="db.kesma"></th>
+            <th class="p-3 text-right" data-i18n="db.status"></th>
+          </tr></thead>
+          <tbody id="dbMilitantsBody"></tbody>
+        </table>
+      </div>
+      <div id="dbPanelCandidates" class="hidden bg-slate-900/70 border border-slate-700/60 rounded-3xl overflow-hidden">
+        <table class="w-full text-sm">
+          <thead><tr class="text-slate-400 text-xs border-b border-slate-700">
+            <th class="p-3 text-right">Nom</th>
+            <th class="p-3 text-right" data-i18n="cand.profession"></th>
+            <th class="p-3 text-right" data-i18n="db.wilaya"></th>
+            <th class="p-3 text-right" data-i18n="db.status"></th>
+          </tr></thead>
+          <tbody id="dbCandidatesBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- pied de navigation commun -->
+  <div class="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur border-t border-slate-800 px-4 py-3 flex items-center justify-between">
+    <button id="prevBtn" onclick="goToPrev()" disabled class="bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-slate-200 font-bold rounded-xl px-4 py-2 text-sm" data-i18n="nav.prev"></button>
+    <div class="flex items-center gap-2">
+      <span class="dot w-2.5 h-2.5 rounded-full bg-green-500" onclick="goToSlide(0)"></span>
+      <span class="dot w-2.5 h-2.5 rounded-full bg-slate-600" onclick="goToSlide(1)"></span>
+      <span class="dot w-2.5 h-2.5 rounded-full bg-slate-600" onclick="goToSlide(2)"></span>
+      <span class="dot w-2.5 h-2.5 rounded-full bg-slate-600" onclick="goToSlide(3)"></span>
+      <span class="dot w-2.5 h-2.5 rounded-full bg-slate-600" onclick="goToSlide(4)"></span>
+    </div>
+    <button id="nextBtn" onclick="goToNext()" class="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold rounded-xl px-4 py-2 text-sm" data-i18n="nav.next"></button>
+  </div>
+
+  <section id="slide5" class="slide min-h-screen flex-col items-center justify-center px-6 py-16 bg-[radial-gradient(ellipse_at_bottom,rgba(251,191,36,0.12),transparent_60%)]">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-3" data-i18n="slide5.title"></h2>
+      <p class="text-slate-300 mb-10" data-i18n="slide5.subtitle"></p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 text-right">
+        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5"><div class="text-lg font-bold text-green-400 mb-1">1</div><div data-i18n="conclusion.feature1"></div></div>
+        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5"><div class="text-lg font-bold text-green-400 mb-1">2</div><div data-i18n="conclusion.feature2"></div></div>
+        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5"><div class="text-lg font-bold text-green-400 mb-1">3</div><div data-i18n="conclusion.feature3"></div></div>
+        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5"><div class="text-lg font-bold text-green-400 mb-1">4</div><div data-i18n="conclusion.feature4"></div></div>
+      </div>
+      <a id="portalLink" href="https://motionmoon-star.github.io/fln-portal/" target="_blank" rel="noopener"
+        class="inline-block bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold rounded-2xl px-8 py-4 text-lg shadow-lg shadow-amber-900/40 transition" data-i18n="conclusion.cta"></a>
+    </div>
+  </section>
+</main>
+
+<script>
+const translations = {
+  ar: {
+    'nav.next': 'التالي', 'nav.prev': 'السابق', 'nav.restart': 'إعادة العرض',
+    'nav.start': 'ابدأ العرض', 'nav.openPortal': 'افتح البوابة',
+    'stats.wilayas': 'ولاية', 'stats.kesmas': 'قسمة بلدية', 'stats.militants': 'إجمالي طلبات العضوية', 'stats.satisfaction': 'نسبة رضا الرقمنة',
+    'slide1.badge': 'البوابة الرقمية لحزب جبهة التحرير الوطني', 'slide1.title': 'رقمنة هياكل الحزب ومناضليه',
+    'slide1.subtitle': 'ديمو تفاعلية لعرض النظام — تعبئة تلقائية للاستمارات وإطلالة على قاعدة البيانات',
+    'slide2.title': 'انخراط مناضل جديد', 'slide2.subtitle': 'تعبئة تلقائية لاستمارة الانخراط',
+    'slide3.title': 'استمارة الترشح — الانتخابات المحلية 2026', 'slide3.subtitle': 'تعبئة تلقائية لاستمارة المترشح',
+    'slide4.title': 'قاعدة البيانات', 'slide4.subtitle': 'إدراج تلقائي للسجلات الجديدة في السجل',
+    'slide5.title': 'قدرات النظام', 'slide5.subtitle': 'ملخص المنظومة',
+    'form.lastname': 'اللقب', 'form.firstname': 'الاسم', 'form.dob': 'تاريخ الميلاد', 'form.pob': 'مكان الميلاد',
+    'form.nin': 'رقم التعريف الوطني (NIN)', 'form.voteCard': 'رقم بطاقة الناخب', 'form.tel': 'رقم الهاتف',
+    'form.email': 'البريد الإلكتروني', 'form.wilaya': 'ولاية الانتساب', 'form.mohafadha': 'المحافظة', 'form.kesma': 'القسمة',
+    'cand.profession': 'المهنة', 'cand.marital': 'الحالة العائلية', 'cand.service': 'الوضعية تجاه الخدمة الوطنية',
+    'cand.phone': 'رقم الهاتف', 'cand.mandates': 'العهدات الانتخابية السابقة',
+    'db.militants': 'سجل المناضلين', 'db.candidates': 'سجل المترشحين', 'db.membershipId': 'رقم العضوية',
+    'db.wilaya': 'الولاية', 'db.mohafadha': 'المحافظة', 'db.kesma': 'القسمة', 'db.status': 'الحالة', 'db.active': 'نشط',
+    'card.membership': 'بطاقة المناضل', 'card.id': 'رقم العضوية', 'card.dobpob': 'تاريخ ومكان الازدياد', 'card.pledge': 'تعهد المناضل',
+    'conclusion.feature1': 'تحديد الهوية البيومترية الموحدة', 'conclusion.feature2': 'تكامل الاشتراك عبر BaridiMob',
+    'conclusion.feature3': 'بطاقة عضوية مزودة برمز QR', 'conclusion.feature4': 'تغطية الولايات الـ 69',
+    'conclusion.cta': 'جرب النظام الحقيقي — افتح البوابة',
+  },
+  fr: {
+    'nav.next': 'Suivant', 'nav.prev': 'Précédent', 'nav.restart': 'Rejouer la démo',
+    'nav.start': 'Démarrer la démo', 'nav.openPortal': 'Ouvrir le portail',
+    'stats.wilayas': 'Wilayas', 'stats.kesmas': 'Kismas communales', 'stats.militants': 'Demandes d\'adhésion', 'stats.satisfaction': 'Satisfaction de la numérisation',
+    'slide1.badge': 'Portail numérique du FLN', 'slide1.title': 'Numérisation des structures et des militants',
+    'slide1.subtitle': 'Démo interactive — remplissage automatique des formulaires et aperçu de la base de données',
+    'slide2.title': 'Adhésion d\'un nouveau militant', 'slide2.subtitle': 'Remplissage automatique du formulaire d\'adhésion',
+    'slide3.title': 'Formulaire de candidature — Élections locales 2026', 'slide3.subtitle': 'Remplissage automatique du formulaire de candidature',
+    'slide4.title': 'Base de données', 'slide4.subtitle': 'Insertion automatique des nouveaux enregistrements',
+    'slide5.title': 'Capacités du système', 'slide5.subtitle': 'Résumé de la plateforme',
+    'form.lastname': 'Nom', 'form.firstname': 'Prénom', 'form.dob': 'Date de naissance', 'form.pob': 'Lieu de naissance',
+    'form.nin': 'NIN (18 chiffres)', 'form.voteCard': 'N° carte d\'électeur', 'form.tel': 'Téléphone',
+    'form.email': 'E-mail', 'form.wilaya': 'Wilaya d\'affiliation', 'form.mohafadha': 'Mohafadha', 'form.kesma': 'Kisma',
+    'cand.profession': 'Profession', 'cand.marital': 'État civil', 'cand.service': 'Situation service national',
+    'cand.phone': 'Téléphone', 'cand.mandates': 'Mandats électoraux antérieurs',
+    'db.militants': 'Registre des militants', 'db.candidates': 'Registre des candidats', 'db.membershipId': 'N° d\'adhésion',
+    'db.wilaya': 'Wilaya', 'db.mohafadha': 'Mohafadha', 'db.kesma': 'Kisma', 'db.status': 'Statut', 'db.active': 'Actif',
+    'card.membership': 'Carte du militant', 'card.id': 'N° d\'adhésion', 'card.dobpob': 'Date et lieu de naissance', 'card.pledge': 'Engagement du militant',
+    'conclusion.feature1': 'Identification biométrique unifiée', 'conclusion.feature2': 'Adhésion intégrée via BaridiMob',
+    'conclusion.feature3': 'Carte d\'adhésion à QR code', 'conclusion.feature4': 'Couverture des 69 wilayas',
+    'conclusion.cta': 'Essayez le vrai système — ouvrez le portail',
+  }
+};
+
+let currentLang = 'ar';
+let currentSlide = 0;
+const t = (k) => translations[currentLang][k] || k;
+
+function switchLang(lang) {
+  if (!translations[lang]) return;
+  currentLang = lang;
+  document.documentElement.lang = lang === 'ar' ? 'ar' : lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.body.classList.toggle('lang-ar', lang === 'ar');
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const txt = t(el.dataset.i18n);
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { if (el.placeholder !== undefined) el.placeholder = txt; }
+    else el.textContent = txt;
+  });
+  if (typeof refreshTranslatedContent === 'function') refreshTranslatedContent();
+}
+
+function goToNext() { if (currentSlide < 4) goToSlide(currentSlide + 1); }
+function goToPrev() { if (currentSlide > 0) goToSlide(currentSlide - 1); }
+
+function goToSlide(n) {
+  if (n < 0 || n > 4) return;
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('slide' + (n + 1));
+  if (el) el.classList.add('active');
+  currentSlide = n;
+  document.getElementById('progressBar').style.width = Math.round(((n + 1) / 5) * 100) + '%';
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.classList.toggle('bg-green-500', i === n);
+    d.classList.toggle('bg-slate-600', i !== n);
+  });
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  if (prevBtn) prevBtn.disabled = n === 0;
+  if (nextBtn) nextBtn.disabled = n === 4;
+  window.scrollTo(0, 0);
+  if (typeof onSlideEnter === 'function') onSlideEnter(n);
+}
+
+let _statsAnimated = false;
+function animateCount(el, to, duration, suffix) {
+  const start = performance.now();
+  function frame(now) {
+    const p = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(to * eased).toLocaleString('en-US') + (suffix || '');
+    if (p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+let _demoPlayed = false;
+let _candDemoPlayed = false;
+function typeIntoField(el, text, speed) {
+  return new Promise((resolve) => {
+    el.value = '';
+    el.dispatchEvent(new Event('input'));
+    const delay = speed || 40;
+    let i = 0;
+    const timer = setInterval(() => {
+      el.value = text.slice(0, ++i);
+      el.dispatchEvent(new Event('input'));
+      if (i >= text.length) { clearInterval(timer); resolve(); }
+    }, delay);
+  });
+}
+function setSelect(el, text) {
+  return new Promise((resolve) => {
+    el.value = text;
+    el.dispatchEvent(new Event('change'));
+    setTimeout(resolve, 250);
+  });
+}
+const DEMO_WILAYAS = [
+  { id: '16', name: 'الجزائر', nameFr: 'Alger', dairas: { 'الجزائر الوسطى': ['الجزائر الوسطى', 'سيدي محمد'], 'باب الوادي': ['باب الوادي', 'بولوغين'], 'سيدي امحمد': ['سيدي امحمد'], 'بئر خادم': ['بئر خادم'] } },
+  { id: '31', name: 'وهران', nameFr: 'Oran', dairas: { 'وهران': ['وهران'], 'بئر الجير': ['بئر الجير'], 'السنية': ['السنية'], 'أرزيو': ['أرزيو'] } },
+  { id: '19', name: 'سطيف', nameFr: 'Sétif', dairas: { 'سطيف': ['سطيف'], 'العلمة': ['العلمة'], 'بوقاعة': ['بوقاعة'], 'عين أرنات': ['عين أرنات'] } },
+  { id: '25', name: 'قسنطينة', nameFr: 'Constantine', dairas: { 'قسنطينة': ['قسنطينة'], 'الخروب': ['الخروب'], 'زيغود يوسف': ['زيغود يوسف'] } }
+];
+const DEMO_MILITANT_ENTRY = {
+  wilaya: 'الجزائر', wilayaFr: 'Alger', mohafadha: 'باب الوادي', mohafadhaFr: 'باب الوادي',
+  kesma: 'باب الوادي', kesmaFr: 'باب الوادي',
+  lastname: 'بن مهيدي', lastnameFr: 'Ben M\'hidi', firstname: 'العربي', firstnameFr: 'Larbi',
+  dob: '1990-05-12', pob: 'أبيار', pobFr: 'Aïe Beya / Bainem',
+  nin: '109019900512345678', voteCard: '948271049', tel: '0661234567', email: 'larbi.benmhidi@exemple.dz'
+};
+function fillMilitantSelects() {
+  const w = document.getElementById('m-wilaya');
+  const m = document.getElementById('m-mohafadha');
+  const k = document.getElementById('m-kesma');
+  w.innerHTML = DEMO_WILAYAS.map(x => `<option value="${x.name}">${currentLang === 'ar' ? x.name : x.nameFr}</option>`).join('');
+  w.addEventListener('change', () => {
+    const wil = DEMO_WILAYAS.find(x => x.name === w.value || x.nameFr === w.value);
+    m.innerHTML = (wil ? Object.keys(wil.dairas) : []).map(d => `<option value="${d}">${d}</option>`).join('');
+    m.dispatchEvent(new Event('change'));
+  });
+  m.addEventListener('change', () => {
+    const wil = DEMO_WILAYAS.find(x => x.name === w.value || x.nameFr === w.value);
+    const kismas = (wil && wil.dairas[m.value]) || [];
+    k.innerHTML = kismas.map(x => `<option value="${x}">${x}</option>`).join('');
+  });
+}
+async function playMilitantDemo() {
+  const e = DEMO_MILITANT_ENTRY;
+  const w = document.getElementById('m-wilaya');
+  await setSelect(w, e.wilaya);
+  const m = document.getElementById('m-mohafadha');
+  await setSelect(m, e.mohafadha);
+  const k = document.getElementById('m-kesma');
+  await setSelect(k, e.kesma);
+  await typeIntoField(document.getElementById('m-lastname'), currentLang === 'ar' ? e.lastname : e.lastnameFr);
+  await typeIntoField(document.getElementById('m-firstname'), currentLang === 'ar' ? e.firstname : e.firstnameFr);
+  await typeIntoField(document.getElementById('m-dob'), e.dob);
+  await typeIntoField(document.getElementById('m-pob'), currentLang === 'ar' ? e.pob : e.pobFr);
+  await typeIntoField(document.getElementById('m-voteCard'), e.voteCard);
+  await typeIntoField(document.getElementById('m-tel'), e.tel);
+  await typeIntoField(document.getElementById('m-email'), e.email);
+  await typeIntoField(document.getElementById('m-nin'), e.nin);
+  const card = document.getElementById('militantCard');
+  card.classList.remove('hidden');
+  document.getElementById('m-card-id').textContent = '16.03/02/26/4821';
+  document.getElementById('m-card-name').textContent = (currentLang === 'ar' ? e.lastname + ' ' + e.firstname : e.firstnameFr + ' ' + e.lastnameFr);
+  document.getElementById('m-card-dobpob').textContent = '12/05/1990 — ' + (currentLang === 'ar' ? e.pob : e.pobFr);
+  document.getElementById('m-card-photo').src = svgAvatar('MH');
+  document.getElementById('replayMilitant').classList.remove('hidden');
+}
+function resetMilitantDemo() {
+  document.getElementById('militantForm').reset();
+  document.getElementById('militantCard').classList.add('hidden');
+  document.getElementById('replayMilitant').classList.add('hidden');
+  _demoPlayed = false;
+}
+function svgAvatar(initials) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="112" height="128"><rect width="112" height="128" fill="#cbd5e1"/><circle cx="56" cy="46" r="26" fill="#334155"/><rect x="18" y="82" width="76" height="40" rx="16" fill="#334155"/><text x="56" y="52" text-anchor="middle" font-size="20" font-weight="bold" fill="#fff" font-family="Arial">${initials}</text></svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+const DEMO_CANDIDATE_ENTRY = {
+  lastname: 'حداد', lastnameFr: 'Haddad', firstname: 'نور الدين', firstnameFr: 'Nour Eddine',
+  dob: '1985-03-21', pob: 'عنابة', pobFr: 'Annaba',
+  marital: { ar: 'متزوج', fr: 'Marié(e)' }, service: { ar: 'أنهى الخدمة الوطنية', fr: 'A terminé le service national' },
+  profession: { ar: 'أستاذ تعليم', fr: 'Enseignant' }, phone: '0770234567',
+  mandates: { ar: 'عضو مجلس بلدي 2017-2022 (عنابة)\nرئيس لجنة الشباب 2019', fr: 'Membre APC 2017-2022 (Annaba)\nPrésident commission jeunesse 2019' }
+};
+
+function fillCandidateSelects() {
+  const marital = document.getElementById('c-marital');
+  const service = document.getElementById('c-service');
+  marital.innerHTML = ['أعزب', 'متزوج', 'مطلق', 'أرمل'].map(v => `<option value="${v}">${v}</option>`).join('');
+  service.innerHTML = ['غير معني', 'معفى', 'مرجأ', 'أنهى الخدمة الوطنية'].map(v => `<option value="${v}">${v}</option>`).join('');
+}
+
+async function playCandidateDemo() {
+  const e = DEMO_CANDIDATE_ENTRY;
+  await typeIntoField(document.getElementById('c-lastname'), currentLang === 'ar' ? e.lastname : e.lastnameFr);
+  await typeIntoField(document.getElementById('c-firstname'), currentLang === 'ar' ? e.firstname : e.firstnameFr);
+  await typeIntoField(document.getElementById('c-dob'), e.dob);
+  await typeIntoField(document.getElementById('c-pob'), currentLang === 'ar' ? e.pob : e.pobFr);
+  await setSelect(document.getElementById('c-marital'), e.marital.ar);
+  await setSelect(document.getElementById('c-service'), e.service.ar);
+  await typeIntoField(document.getElementById('c-profession'), e.profession[currentLang]);
+  await typeIntoField(document.getElementById('c-mandates'), e.mandates[currentLang]);
+  await typeIntoField(document.getElementById('c-phone'), e.phone);
+  const pv = document.getElementById('candidatePreview');
+  pv.classList.remove('hidden');
+  document.getElementById('c-preview-name').textContent = (currentLang === 'ar' ? e.lastname + ' ' + e.firstname : e.firstnameFr + ' ' + e.lastnameFr);
+  document.getElementById('c-preview-dobpob').textContent = '21/03/1985 — ' + (currentLang === 'ar' ? e.pob : e.pobFr);
+  document.getElementById('c-preview-prof').textContent = e.profession[currentLang];
+  document.getElementById('c-preview-phone').textContent = e.phone;
+  document.getElementById('c-preview-photo').src = svgAvatar('NH');
+  document.getElementById('replayCandidate').classList.remove('hidden');
+}
+
+function resetCandidateDemo() {
+  document.getElementById('candidateForm').reset();
+  document.getElementById('candidatePreview').classList.add('hidden');
+  document.getElementById('replayCandidate').classList.add('hidden');
+  _candDemoPlayed = false;
+}
+const DEMO_MILITANTS = [
+  { id: '16.01/01/24/0001', lastname: 'بن مهيدي', firstname: 'العربي', wilaya: 'الجزائر', kesma: 'الجزائر الوسطى', status: 'نشط' },
+  { id: '16.02/04/25/0014', lastname: 'بوضياف', firstname: 'محمد', wilaya: 'الجزائر', kesma: 'باب الوادي', status: 'نشط' },
+  { id: '31.01/03/24/0087', lastname: 'خيضر', firstname: 'العربي', wilaya: 'وهران', kesma: 'وهران', status: 'نشط' },
+  { id: '19.02/05/23/0022', lastname: 'قرش', firstname: 'عبد الحفيظ', wilaya: 'سطيف', kesma: 'العلمة', status: 'نشط' },
+  { id: '16.03/02/24/0031', lastname: 'دادا', firstname: 'عمر', wilaya: 'الجزائر', kesma: 'سيدي امحمد', status: 'نشط' },
+  { id: '25.01/07/22/0009', lastname: 'كروم', firstname: 'عبد القادر', wilaya: 'قسنطينة', kesma: 'قسنطينة', status: 'نشط' },
+  { id: '31.02/08/25/0112', lastname: 'بوتفليقة', firstname: 'أحمد', wilaya: 'وهران', kesma: 'بئر الجير', status: 'نشط' },
+  { id: '19.01/06/24/0045', lastname: 'عياشي', firstname: 'نورة', wilaya: 'سطيف', kesma: 'سطيف', status: 'نشط' }
+];
+const DEMO_CANDIDATES = [
+  { lastname: 'حداد', firstname: 'نور الدين', profession: 'أستاذ تعليم', wilaya: 'عنابة' },
+  { lastname: 'زروقي', firstname: 'فاطمة', profession: 'طبيبة', wilaya: 'الجزائر' },
+  { lastname: 'مزياني', firstname: 'عبد القادر', profession: 'مهندس', wilaya: 'بجاية' },
+  { lastname: 'بلحاج', firstname: 'سعيد', profession: 'فلاح', wilaya: 'سوق أهراس' }
+];
+let _dbPlayed = false;
+
+function dbRowMilitant(m, isNew) {
+  return `<tr class="${isNew ? 'row-new' : ''} border-b border-slate-800">
+    <td class="p-3 font-mono text-xs text-amber-300" dir="ltr">${m.id}</td>
+    <td class="p-3 font-bold"><img src="${svgAvatar('M')}" class="inline-block w-7 h-8 object-cover rounded mr-2 align-middle" alt="" />${m.lastname} ${m.firstname}</td>
+    <td class="p-3 text-slate-300">${m.wilaya}</td>
+    <td class="p-3 text-slate-300">${m.kesma}</td>
+    <td class="p-3"><span class="text-green-400 bg-green-500/10 border border-green-500/25 rounded-full px-2.5 py-0.5 text-xs" data-i18n="db.active">${m.status}</span></td>
+  </tr>`;
+}
+function dbRowCandidate(c) {
+  return `<tr class="border-b border-slate-800">
+    <td class="p-3 font-bold">${c.lastname} ${c.firstname}</td>
+    <td class="p-3 text-slate-300">${c.profession}</td>
+    <td class="p-3 text-slate-300">${c.wilaya}</td>
+    <td class="p-3"><span class="text-green-400 bg-green-500/10 border border-green-500/25 rounded-full px-2.5 py-0.5 text-xs">نشط</span></td>
+  </tr>`;
+}
+function switchDbTab(tab) {
+  const m = tab === 'militants';
+  document.getElementById('dbPanelMilitants').classList.toggle('hidden', !m);
+  document.getElementById('dbPanelCandidates').classList.toggle('hidden', m);
+  document.getElementById('tabMilitants').classList.toggle('bg-green-600', m);
+  document.getElementById('tabMilitants').classList.toggle('bg-slate-800', !m);
+  document.getElementById('tabCandidates').classList.toggle('bg-green-600', !m);
+  document.getElementById('tabCandidates').classList.toggle('bg-slate-800', m);
+}
+function playDatabaseDemo() {
+  const e = DEMO_MILITANT_ENTRY;
+  const newMilitant = { id: '16.03/02/26/4821', lastname: e.lastname, firstname: e.firstname, wilaya: e.wilaya, kesma: e.kesma, status: 'نشط' };
+  const rows = DEMO_MILITANTS.map(m => dbRowMilitant(m, false));
+  document.getElementById('dbMilitantsBody').innerHTML = rows.join('');
+  document.getElementById('dbCandidatesBody').innerHTML = DEMO_CANDIDATES.map(dbRowCandidate).join('');
+  let counter = 24500;
+  const counterEl = document.getElementById('dbCounter');
+  setTimeout(() => {
+    document.getElementById('dbMilitantsBody').insertAdjacentHTML('afterbegin', dbRowMilitant(newMilitant, true));
+    counter += 1;
+    counterEl.textContent = counter.toLocaleString('en-US');
+    const c = DEMO_CANDIDATE_ENTRY;
+    const newCandidate = { lastname: c.lastname, firstname: c.firstname, profession: c.profession.ar, wilaya: c.pob };
+    document.getElementById('dbCandidatesBody').insertAdjacentHTML('afterbegin', `<tr class="row-new border-b border-slate-800">
+      <td class="p-3 font-bold">${newCandidate.lastname} ${newCandidate.firstname}</td>
+      <td class="p-3 text-slate-300">${newCandidate.profession}</td>
+      <td class="p-3 text-slate-300">${newCandidate.wilaya}</td>
+      <td class="p-3"><span class="text-green-400 bg-green-500/10 border border-green-500/25 rounded-full px-2.5 py-0.5 text-xs">نشط</span></td>
+    </tr>`);
+    counter += 1;
+    counterEl.textContent = counter.toLocaleString('en-US');
+  }, 600);
+}
+function resetDatabaseDemo() {
+  _dbPlayed = false;
+  document.getElementById('dbMilitantsBody').innerHTML = '';
+  document.getElementById('dbCandidatesBody').innerHTML = '';
+  document.getElementById('dbCounter').textContent = '24,500';
+  switchDbTab('militants');
+}
+function onSlideEnter(n) {
+  if (n === 0 && !_statsAnimated) {
+    _statsAnimated = true;
+    animateCount(document.getElementById('statWilayas'), 69, 1800);
+    animateCount(document.getElementById('statKesmas'), 1240, 1400);
+    animateCount(document.getElementById('statMilitants'), 24500, 1400, '+');
+    animateCount(document.getElementById('statSatisfaction'), 92, 1200, '%');
+  }
+  if (n === 1 && !_demoPlayed) {
+    _demoPlayed = true;
+    setTimeout(playMilitantDemo, 400);
+  }
+  if (n === 2 && !_candDemoPlayed) {
+    _candDemoPlayed = true;
+    setTimeout(playCandidateDemo, 400);
+  }
+  if (n === 3 && !_dbPlayed) {
+    _dbPlayed = true;
+    setTimeout(playDatabaseDemo, 400);
+  }
+}
+function refreshTranslatedContent() {
+  const w = document.getElementById('m-wilaya');
+  if (w && w.options.length) {
+    const prev = w.value;
+    w.innerHTML = DEMO_WILAYAS.map(x => `<option value="${x.name}">${currentLang === 'ar' ? x.name : x.nameFr}</option>`).join('');
+    if (prev) { w.value = prev; w.dispatchEvent(new Event('change')); }
+  }
+  const cf = document.getElementById('candidateForm');
+  if (cf) cf.reset();
+  fillCandidateSelects();
+  document.querySelectorAll('#dbMilitantsBody tr').forEach(row => {
+    const s = row.querySelector('span[data-i18n="db.active"]');
+    if (s) s.textContent = currentLang === 'ar' ? 'نشط' : 'Actif';
+  });
+  document.querySelectorAll('#dbCandidatesBody tr').forEach(row => {
+    const s = row.querySelector('span');
+    if (s) s.textContent = currentLang === 'ar' ? 'نشط' : 'Actif';
+  });
+  _demoPlayed = false;
+  _candDemoPlayed = false;
+  _dbPlayed = false;
+}
+window.addEventListener('DOMContentLoaded', () => onSlideEnter(0));
+window.addEventListener('DOMContentLoaded', () => {
+  fillMilitantSelects();
+  fillCandidateSelects();
+  switchLang('ar');
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') { document.documentElement.dir === 'rtl' ? goToPrev() : goToNext(); }
+  if (e.key === 'ArrowLeft') { document.documentElement.dir === 'rtl' ? goToNext() : goToPrev(); }
+  if (e.key === ' ') { e.preventDefault(); goToNext(); }
+});
+</script>
+</body>
+</html>
