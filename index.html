@@ -2065,6 +2065,15 @@
 
         <!-- ==================== TAB 5: CANDIDATE REGISTRATION ==================== -->
         <section id="tab-candidate" class="hidden space-y-6 animate-fadeIn">
+            <div class="flex flex-wrap items-center justify-center gap-2 md:gap-3 pt-2">
+                <button onclick="switchCandidateSection('candidate')" id="subtab-candidate" class="nav-pill nav-pill-active">
+                    <i class="fa-solid fa-file-lines text-sm"></i><span>استمارات المترشح</span>
+                </button>
+                <button onclick="switchCandidateSection('chakwa')" id="subtab-chakwa" class="nav-pill">
+                    <i class="fa-solid fa-message text-sm"></i><span>شكوى المترشح</span>
+                </button>
+            </div>
+            <div id="candidate-section">
             <div class="card-dark rounded-[28px] p-4 md:p-6 lg:p-10 max-w-5xl mx-auto">
                 <div class="text-center mb-6 md:mb-8 border-b border-white/10 pb-4 md:pb-6">
                     <span class="bg-green-600/15 text-green-400 border border-green-500/25 px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest inline-block mb-2 md:mb-3">استمارة الترشح</span>
@@ -2319,6 +2328,8 @@
                     </div>
                 </form>
             </div>
+            </div>
+            <div id="chakwa-section" class="hidden">
             <div class="card-dark rounded-[28px] p-4 md:p-6 lg:p-10 max-w-5xl mx-auto mt-6">
                 <div class="text-center mb-6 md:mb-8 border-b border-white/10 pb-4 md:pb-6">
                     <span class="bg-green-600/15 text-green-400 border border-green-500/25 px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest inline-block mb-2 md:mb-3">شكوى المترشح</span>
@@ -2391,10 +2402,12 @@
                     </div>
                 </form>
             </div>
+            </div>
         </section>
 
     <script>
         // Regional Scope Mappings (Bilingual Algeria Data)
+        const CHAKWA_FORMSPREE_ID = 'f/xxxxxxxx'; // Formspree ID — destinataire : motion.moon@gmail.com
         const rawWilayas = [
             { id: "01", name: "أدرار", nameFr: "Adrar", municipalities: ["أدرار", "تامست", "فنوغيل", "بودة", "تسابيت", "أولاد أحمد تيمي"] },
             { id: "02", name: "الشلف", nameFr: "Chlef", municipalities: ["الشلف", "سنجاس", "أم الذروع", "وادي الفضة", "بوقادير", "التنس"] },
@@ -6058,6 +6071,7 @@
         }
 
         function printCandidateForm() {
+            switchCandidateSection('candidate');
             document.body.classList.add('printing-candidate');
             setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-candidate'); }, 100); }, 100);
         }
@@ -6070,10 +6084,28 @@
             data.timestamp = Date.now();
             console.log('Chakwa data saved:', data);
             if (typeof saveToDB === 'function') { saveToDB('chakwa', data); }
-            alert('تم إرسال الشكوى بنجاح');
+            if (!CHAKWA_FORMSPREE_ID || CHAKWA_FORMSPREE_ID === 'f/xxxxxxxx') {
+                alert('الإرسال بالبريد الإلكتروني غير مفعل بعد، تم حفظ الشكوى محلياً');
+                return;
+            }
+            const submitBtn = document.querySelector('#chakwaForm button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
+            fetch('https://formspree.io/' + CHAKWA_FORMSPREE_ID, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(res => {
+                if (res.ok) { alert('تم إرسال الشكوى بنجاح'); }
+                else { alert('فشل إرسال الشكوى، حاول مرة أخرى'); }
+            }).catch(() => {
+                alert('فشل إرسال الشكوى، حاول مرة أخرى');
+            }).finally(() => {
+                if (submitBtn) submitBtn.disabled = false;
+            });
         }
 
         function printChakwaForm() {
+            switchCandidateSection('chakwa');
             document.body.classList.add('printing-chakwa');
             setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-chakwa'); }, 100); }, 100);
         }
@@ -6477,6 +6509,16 @@
             const activeMBtn = document.getElementById('tab-btn-' + tabId + '-m');
             if (activeMBtn) activeMBtn.className = _activeMobileClass;
             showSectionIntro(tabId);
+        }
+
+        function switchCandidateSection(which) {
+            const sections = { candidate: 'candidate-section', chakwa: 'chakwa-section' };
+            const btnCandidate = document.getElementById('subtab-candidate');
+            const btnChakwa = document.getElementById('subtab-chakwa');
+            document.getElementById(sections.candidate).classList.toggle('hidden', which !== 'candidate');
+            document.getElementById(sections.chakwa).classList.toggle('hidden', which !== 'chakwa');
+            btnCandidate.className = (which === 'candidate') ? _activeTabClass : _inactiveTabClass;
+            btnChakwa.className = (which === 'chakwa') ? _activeTabClass : _inactiveTabClass;
         }
 
         // Handle Image File Upload Conversion to Base64
