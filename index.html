@@ -491,6 +491,7 @@
           body.printing-candidate #tab-candidate .border-amber-500\\/20 { border-color: #fcd34d !important; }
           body.printing-candidate #tab-candidate .input-dark { background: transparent !important; border-color: #94a3b8 !important; color: #000 !important; }
           body.printing-candidate #tab-candidate .btn-pill { display: none !important; }
+          body.printing-candidate #subtab-candidate, body.printing-candidate #subtab-chakwa { display: none !important; }
           body.printing-candidate .nav-bar, body.printing-candidate .nav-pills, body.printing-candidate .intro-section,
           body.printing-candidate footer, body.printing-candidate .db-nav, body.printing-candidate .db-subnav { display: none !important; }
           body.printing-cand-form * { visibility: hidden; }
@@ -511,6 +512,7 @@
           body.printing-chakwa #tab-candidate .border-amber-500\\/20 { border-color: #fcd34d !important; }
           body.printing-chakwa #tab-candidate .input-dark { background: transparent !important; border-color: #94a3b8 !important; color: #000 !important; }
           body.printing-chakwa #tab-candidate .btn-pill { display: none !important; }
+          body.printing-chakwa #subtab-candidate, body.printing-chakwa #subtab-chakwa { display: none !important; }
           body.printing-chakwa .nav-bar, body.printing-chakwa .nav-pills, body.printing-chakwa .intro-section,
           body.printing-chakwa footer, body.printing-chakwa .db-nav, body.printing-chakwa .db-subnav { display: none !important; }
         }
@@ -6071,12 +6073,19 @@
         }
 
         function printCandidateForm() {
+            const prev = document.getElementById('subtab-candidate').classList.contains('nav-pill-active') ? 'candidate' : 'chakwa';
             switchCandidateSection('candidate');
             document.body.classList.add('printing-candidate');
-            setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-candidate'); }, 100); }, 100);
+            setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-candidate'); switchCandidateSection(prev); }, 100); }, 100);
         }
 
+        let _chakwaSubmitting = false;
+
         function saveChakwaForm() {
+            if (_chakwaSubmitting) return;
+            const submitBtn = document.querySelector('#chakwaForm button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
+            _chakwaSubmitting = true;
             const fields = ['ch-membership-id','ch-lastname','ch-firstname','ch-wilaya',
                 'ch-subject','ch-description','ch-phone','ch-date'];
             const data = {};
@@ -6085,14 +6094,14 @@
             console.log('Chakwa data saved:', data);
             if (typeof saveToDB === 'function') { saveToDB('chakwa', data); }
             if (!CHAKWA_FORMSPREE_ID || CHAKWA_FORMSPREE_ID === 'f/xxxxxxxx') {
+                if (submitBtn) submitBtn.disabled = false;
+                _chakwaSubmitting = false;
                 alert('الإرسال بالبريد الإلكتروني غير مفعل بعد، تم حفظ الشكوى محلياً');
                 return;
             }
-            const submitBtn = document.querySelector('#chakwaForm button[type="submit"]');
-            if (submitBtn) submitBtn.disabled = true;
             fetch('https://formspree.io/' + CHAKWA_FORMSPREE_ID, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify(data)
             }).then(res => {
                 if (res.ok) { alert('تم إرسال الشكوى بنجاح'); }
@@ -6101,13 +6110,15 @@
                 alert('فشل إرسال الشكوى، حاول مرة أخرى');
             }).finally(() => {
                 if (submitBtn) submitBtn.disabled = false;
+                _chakwaSubmitting = false;
             });
         }
 
         function printChakwaForm() {
+            const prev = document.getElementById('subtab-candidate').classList.contains('nav-pill-active') ? 'candidate' : 'chakwa';
             switchCandidateSection('chakwa');
             document.body.classList.add('printing-chakwa');
-            setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-chakwa'); }, 100); }, 100);
+            setTimeout(() => { window.print(); setTimeout(() => { document.body.classList.remove('printing-chakwa'); switchCandidateSection(prev); }, 100); }, 100);
         }
 
         function populateChakwaWilaya() {
