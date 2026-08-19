@@ -4,208 +4,535 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>FLN Portal — Présentation / تقديم</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
 <style>
-  body { font-family: 'Segoe UI', Tahoma, sans-serif; }
-  body.lang-ar { font-family: 'Amiri', serif; }
-  .slide { display: none; }
-  .slide.active { display: flex; }
-  @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-  .fade-in { animation: fadeSlideUp 0.6s ease both; }
-  @keyframes flashGreen { 0% { background-color: rgba(34,197,94,0.45); } 100% { background-color: transparent; } }
-  .row-new { animation: flashGreen 2.2s ease 1; }
-  @keyframes countUp { from { opacity: 0.3; } to { opacity: 1; } }
-  .pseudo-qr { background-image: repeating-linear-gradient(0deg, #111 0 2px, transparent 2px 5px), repeating-linear-gradient(90deg, #111 0 2px, transparent 2px 5px); }
-  .progress-fill { transition: width 0.45s ease; }
+:root {
+  --fln-bg: #0a1a0e;
+  --fln-dark: #143718;
+  --fln-mid: #1e5631;
+  --fln-green: #006233;
+  --fln-green-2: #005428;
+  --fln-gold: #f59e0b;
+  --fln-gold-dark: #d97706;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --white-30: rgba(255,255,255,.3);
+}
+
+body {
+  background: var(--fln-bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-family: 'Cairo', system-ui, sans-serif;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(0,98,51,.25) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(20,55,24,.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(245,158,11,.04) 0%, transparent 40%),
+    linear-gradient(160deg, #071208 0%, #0a1a0e 40%, #0d1117 100%);
+}
+
+.slide { display: none; }
+.slide.active { display: flex; }
+
+/* === CARDS === */
+.card-dark {
+  background: rgba(10,31,16,.5);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px -8px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.04);
+  transition: box-shadow .3s, transform .3s;
+}
+.card-dark:hover {
+  box-shadow: 0 16px 48px -8px rgba(0,0,0,.5);
+  transform: translateY(-3px);
+}
+.card-dark-static { background: rgba(10,31,16,.5); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,.06); border-radius: 20px; box-shadow: 0 8px 32px -8px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.04); pointer-events: none; }
+.card-dark-static:hover { box-shadow: 0 8px 32px -8px rgba(0,0,0,.4); transform: none; }
+
+/* === BUTTONS === */
+.btn-pill {
+  display: inline-block;
+  border-radius: 999px;
+  overflow: hidden;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: all .4s cubic-bezier(.23,1,.32,1);
+  position: relative;
+}
+.btn-pill:hover { transform: translateY(-3px) scale(1.02); }
+.btn-pill:active { transform: scale(0.97); }
+.btn-gold-pill {
+  background: linear-gradient(135deg, var(--fln-gold), var(--fln-gold-dark));
+  color: var(--fln-dark);
+  box-shadow: 0 6px 24px -4px rgba(245,158,11,.4);
+}
+.btn-green-pill {
+  background: linear-gradient(135deg, var(--fln-green), var(--fln-green-2));
+  color: #fff;
+  box-shadow: 0 6px 24px -4px rgba(0,98,51,.4);
+}
+.btn-glass-pill {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  backdrop-filter: blur(8px);
+  color: var(--text);
+}
+.btn-outline-pill {
+  background: transparent;
+  color: var(--fln-gold);
+  border: 1.5px solid var(--fln-gold);
+}
+.btn-sm { padding: 8px 20px; font-size: 12px; }
+
+/* === FORMS === */
+.input-dark {
+  width: 100%;
+  background: rgba(255,255,255,.06);
+  border: 1.5px solid rgba(255,255,255,.1);
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+  box-sizing: border-box;
+}
+.input-dark::placeholder { color: var(--white-30); }
+.input-dark option { background: var(--fln-dark); color: var(--text); }
+.input-dark:focus {
+  outline: none;
+  border-color: var(--fln-green);
+  box-shadow: 0 0 0 3px rgba(0,98,51,.15), 0 0 16px rgba(0,98,51,.1);
+  background: rgba(255,255,255,.08);
+}
+#slide3 .input-dark:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96,165,250,.15), 0 0 16px rgba(96,165,250,.1);
+}
+
+.float-label-group { position: relative; display: block; }
+.float-label-group label {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  pointer-events: none;
+  transition: all .2s;
+  background: transparent;
+  padding: 0 4px;
+}
+.float-label-group .input-dark:focus + label,
+.float-label-group .input-dark:not(:placeholder-shown) + label,
+.float-label-group select:focus + label,
+.float-label-group select + label {
+  top: 0;
+  font-size: 10px;
+  color: var(--fln-gold);
+  background: var(--fln-bg);
+  padding: 0 6px;
+}
+#slide3 .float-label-group .input-dark:focus + label,
+#slide3 .float-label-group .input-dark:not(:placeholder-shown) + label {
+  color: #60a5fa;
+}
+select.input-dark { appearance: auto; }
+
+/* === BADGES === */
+.badge-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(34,197,94,.1);
+  color: #4ade80;
+  border: 1px solid rgba(34,197,94,.25);
+}
+.badge-active::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse 2s infinite;
+}
+
+/* === TABLES === */
+table { width: 100%; border-collapse: collapse; }
+th {
+  padding: 10px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: right;
+  text-transform: uppercase;
+}
+.table-militants th { background: var(--fln-gold); color: var(--fln-dark); }
+.table-candidates th { background: rgba(255,255,255,.04); color: var(--muted); }
+td {
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  font-size: 13px;
+}
+tbody tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+tbody tr:hover td { background: rgba(255,255,255,.05); }
+
+/* === DOTS === */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.25);
+  cursor: pointer;
+  transition: all .3s;
+  display: inline-block;
+}
+.dot.active {
+  background: var(--fln-gold);
+  box-shadow: 0 0 8px rgba(245,158,11,.5);
+}
+.db-tab-btn.active {
+  background: rgba(129,140,248,.15) !important;
+  color: #fff !important;
+  border-color: #818cf8 !important;
+  box-shadow: 0 0 20px rgba(129,140,248,.15);
+}
+
+/* === HEADER === */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(0,50,25,.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,98,51,.3);
+}
+.header-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--fln-dark);
+  border: 2px solid var(--fln-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 12px;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(0,98,51,.3);
+}
+.header-title {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  font-size: 14px;
+  color: #fff;
+}
+.header-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse 2s infinite;
+  display: inline-block;
+  margin-left: 6px;
+}
+.header-dots { display: flex; align-items: center; gap: 10px; }
+.header-flags { display: flex; gap: 6px; }
+
+/* === PROGRESS BAR (bottom) === */
+.progress-bar-wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  height: 4px;
+  background: var(--fln-dark);
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--fln-gold), var(--fln-gold-dark));
+  transition: width .45s ease;
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeSlideUp .6s ease both; }
+@keyframes flashGreen {
+  0% { background-color: rgba(34,197,94,.45); }
+  100% { background-color: transparent; }
+}
+@keyframes flashIndigo {
+  0% { background-color: rgba(129,140,248,.3); }
+  100% { background-color: transparent; }
+}
+.row-new { animation: flashIndigo 2.2s ease 1; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-text {
+  background: linear-gradient(135deg, #f59e0b, #fff 40%, #f59e0b 60%, #d97706);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+/* === MISC === */
+.pseudo-qr {
+  background-image: repeating-linear-gradient(0deg, #111 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(90deg, #111 0 2px, transparent 2px 5px);
+}
+.slide-accent-or .slide-glow { background: radial-gradient(ellipse at top, rgba(245,158,11,.12), transparent 60%); }
+.slide-accent-vert .slide-glow { background: radial-gradient(ellipse at top, rgba(0,98,51,.15), transparent 60%); }
+.slide-accent-bleu .slide-glow { background: radial-gradient(ellipse at top, rgba(96,165,250,.12), transparent 60%); }
+.slide-accent-indigo .slide-glow { background: radial-gradient(ellipse at top, rgba(129,140,248,.12), transparent 60%); }
+.text-gold { color: var(--fln-gold); }
+.text-green { color: var(--fln-green); }
+.text-indigo { color: #818cf8; }
+.font-amiri { font-family: 'Amiri', Georgia, serif; }
+.font-mono { font-family: 'Courier New', monospace; }
 </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
-<!-- barre de progression -->
-<div class="fixed top-0 left-0 right-0 z-50 h-1.5 bg-slate-800">
-  <div id="progressBar" class="progress-fill h-full bg-gradient-to-r from-green-500 to-amber-400" style="width:20%"></div>
-</div>
+<body>
+<header class="app-header">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="header-logo">FLN</div>
+    <div class="header-dots">
+      <span class="dot active" onclick="goToSlide(0)"></span>
+      <span class="dot" onclick="goToSlide(1)"></span>
+      <span class="dot" onclick="goToSlide(2)"></span>
+      <span class="dot" onclick="goToSlide(3)"></span>
+      <span class="dot" onclick="goToSlide(4)"></span>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <span class="header-title" data-i18n="slide1.badge"></span>
+    <span class="header-dot"></span>
+  </div>
+  <div class="header-flags" id="langToggle">
+    <button onclick="switchLang('ar')" class="btn-pill btn-sm btn-glass-pill" style="font-size:18px;line-height:1;">🇩🇿</button>
+    <button onclick="switchLang('fr')" class="btn-pill btn-sm btn-glass-pill" style="font-size:18px;line-height:1;">🇫🇷</button>
+  </div>
+</header>
 
-<!-- bascule langue -->
-<button id="langToggle" onclick="switchLang(currentLang === 'ar' ? 'fr' : 'ar')"
-  class="fixed top-3 right-3 z-50 bg-slate-800/90 hover:bg-slate-700 border border-slate-600 rounded-xl px-4 py-2 text-sm font-bold text-amber-300">
-  FR / ع
-</button>
+<div class="progress-bar-wrap">
+  <div id="progressBar" class="progress-fill" style="width:20%"></div>
+</div>
 
 <!-- 5 slides (langue = bouton fixe) -->
 <main id="deck" class="min-h-screen">
-  <section id="slide1" class="slide active min-h-screen flex-col items-center justify-center px-6 py-16 bg-[radial-gradient(ellipse_at_top,rgba(34,197,94,0.15),transparent_60%)]">
-    <div class="text-center max-w-4xl mx-auto">
-      <span class="inline-block text-xs font-bold uppercase tracking-widest text-amber-300 bg-amber-400/10 border border-amber-500/25 rounded-full px-4 py-1.5 mb-6" data-i18n="slide1.badge"></span>
-      <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 leading-tight" data-i18n="slide1.title"></h1>
-      <p class="text-slate-300 text-base md:text-lg mb-10" data-i18n="slide1.subtitle"></p>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5">
-          <div id="statWilayas" class="text-3xl md:text-5xl font-black text-green-400">0</div>
-          <div class="text-xs text-slate-400 mt-1" data-i18n="stats.wilayas"></div>
+  <section id="slide1" class="slide active min-h-screen flex-col items-center justify-center px-6 py-16 slide-accent-or" style="background:linear-gradient(135deg,#143718 0%,#1e5631 50%,#0a1a0e 100%);">
+    <div class="slide-glow" style="position:absolute;inset:0;pointer-events:none;"></div>
+    <div class="text-center max-w-4xl mx-auto" style="position:relative;">
+      <span class="btn-pill btn-outline-pill btn-sm" data-i18n="slide1.badge" style="margin-bottom:24px;"></span>
+      <h1 class="shimmer-text font-amiri" style="font-size:clamp(28px,5vw,64px);font-weight:700;margin-bottom:16px;line-height:1.2;" data-i18n="slide1.title"></h1>
+      <p style="color:var(--muted);font-size:clamp(14px,2vw,18px);margin-bottom:40px;" data-i18n="slide1.subtitle"></p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:48px;">
+        <div class="card-dark" style="padding:20px;text-align:center;">
+          <div id="statWilayas" class="text-gold" style="font-size:clamp(24px,4vw,48px);font-weight:900;">0</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;" data-i18n="stats.wilayas"></div>
         </div>
-        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5">
-          <div id="statKesmas" class="text-3xl md:text-5xl font-black text-green-400">0</div>
-          <div class="text-xs text-slate-400 mt-1" data-i18n="stats.kesmas"></div>
+        <div class="card-dark" style="padding:20px;text-align:center;">
+          <div id="statKesmas" class="text-gold" style="font-size:clamp(24px,4vw,48px);font-weight:900;">0</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;" data-i18n="stats.kesmas"></div>
         </div>
-        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5">
-          <div id="statMilitants" class="text-3xl md:text-5xl font-black text-amber-400">0</div>
-          <div class="text-xs text-slate-400 mt-1" data-i18n="stats.militants"></div>
+        <div class="card-dark" style="padding:20px;text-align:center;">
+          <div id="statMilitants" style="font-size:clamp(24px,4vw,48px);font-weight:900;color:#4ade80;">0</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;" data-i18n="stats.militants"></div>
         </div>
-        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5">
-          <div id="statSatisfaction" class="text-3xl md:text-5xl font-black text-amber-400">0</div>
-          <div class="text-xs text-slate-400 mt-1" data-i18n="stats.satisfaction"></div>
+        <div class="card-dark" style="padding:20px;text-align:center;">
+          <div id="statSatisfaction" class="text-gold" style="font-size:clamp(24px,4vw,48px);font-weight:900;">0</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;" data-i18n="stats.satisfaction"></div>
         </div>
       </div>
-      <button id="startBtn" onclick="goToSlide(1)" class="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-extrabold rounded-2xl px-8 py-4 text-lg shadow-lg shadow-green-900/40 transition" data-i18n="nav.start"></button>
+      <button id="startBtn" onclick="goToSlide(1)" class="btn-pill btn-gold-pill" data-i18n="nav.start"></button>
     </div>
   </section>
 
   <section id="slide2" class="slide min-h-screen flex-col items-center justify-center px-4 md:px-6 py-16">
-    <div class="w-full max-w-5xl mx-auto">
-      <div class="text-center mb-8">
-        <h2 class="text-2xl md:text-4xl font-extrabold text-white mb-2" data-i18n="slide2.title"></h2>
-        <p class="text-amber-400/80 text-sm" data-i18n="slide2.subtitle"></p>
-      </div>
-      <div class="grid md:grid-cols-2 gap-6 items-start">
-        <form id="militantForm" class="bg-slate-900/70 border border-slate-700/60 rounded-3xl p-5 md:p-7 space-y-3">
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.wilaya"></label>
-              <select id="m-wilaya" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></select>
-            </div>
-            <div>
-              <label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.mohafadha"></label>
-              <select id="m-mohafadha" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></select>
-            </div>
+  <div style="width:100%;max-width:1024px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:32px;">
+      <h2 style="font-size:clamp(20px,3.5vw,40px);font-weight:900;color:#fff;margin-bottom:8px;" data-i18n="slide2.title"></h2>
+      <span class="btn-pill btn-green-pill btn-sm" data-i18n="slide2.subtitle"></span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+      <form id="militantForm" class="card-dark" style="padding:28px;border-top:3px solid var(--fln-green);">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="float-label-group">
+            <select id="m-wilaya" class="input-dark" placeholder=" " style="padding-top:18px;"></select>
+            <label data-i18n="form.wilaya"></label>
           </div>
-          <div>
-            <label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.kesma"></label>
-            <select id="m-kesma" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></select>
+          <div class="float-label-group">
+            <select id="m-mohafadha" class="input-dark" placeholder=" " style="padding-top:18px;"></select>
+            <label data-i18n="form.mohafadha"></label>
           </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.lastname"></label><input id="m-lastname" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.firstname"></label><input id="m-firstname" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.dob"></label><input id="m-dob" type="date" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.pob"></label><input id="m-pob" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.nin"></label><input id="m-nin" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white font-mono" dir="ltr"></div>
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.voteCard"></label><input id="m-voteCard" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white font-mono" dir="ltr"></div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.tel"></label><input id="m-tel" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white font-mono" dir="ltr"></div>
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.email"></label><input id="m-email" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white font-mono" dir="ltr"></div>
-          </div>
-        </form>
-
-        <div class="text-center">
-          <div id="militantCard" class="hidden mx-auto w-full max-w-sm">
-            <div class="bg-gradient-to-br from-emerald-700 to-green-900 border-2 border-amber-400/70 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
-              <div class="absolute top-0 left-0 right-0 h-1 bg-amber-400"></div>
-              <div class="flex items-center justify-between mb-4">
-                <span class="text-[10px] font-bold text-emerald-200 uppercase tracking-widest" data-i18n="card.membership"></span>
-                <img id="m-card-photo" class="w-14 h-16 object-cover rounded-lg border-2 border-amber-300/60 bg-slate-200" alt="" />
-              </div>
-              <div class="text-white space-y-2 text-right">
-                <div class="text-lg font-black font-amiri" id="m-card-name">—</div>
-                <div class="text-[11px] text-emerald-100"><span data-i18n="card.id"></span>: <span id="m-card-id" class="font-mono text-amber-300" dir="ltr">—</span></div>
-                <div class="text-[11px] text-emerald-100"><span data-i18n="card.dobpob"></span>: <span id="m-card-dobpob" class="text-amber-200">—</span></div>
-                <div class="mt-4 flex items-center justify-center"><div class="pseudo-qr w-16 h-16 bg-white rounded-lg"></div></div>
-              </div>
-            </div>
-          </div>
-          <button id="replayMilitant" onclick="resetMilitantDemo()" class="hidden mt-6 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 font-bold rounded-xl px-5 py-2.5 text-sm" data-i18n="nav.restart"></button>
         </div>
+        <div class="float-label-group" style="margin-top:12px;">
+          <select id="m-kesma" class="input-dark" placeholder=" " style="padding-top:18px;"></select>
+          <label data-i18n="form.kesma"></label>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+          <div class="float-label-group"><input id="m-lastname" class="input-dark" placeholder=" " /><label data-i18n="form.lastname"></label></div>
+          <div class="float-label-group"><input id="m-firstname" class="input-dark" placeholder=" " /><label data-i18n="form.firstname"></label></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+          <div class="float-label-group"><input id="m-dob" type="date" class="input-dark" placeholder=" " style="padding-top:18px;" /><label data-i18n="form.dob"></label></div>
+          <div class="float-label-group"><input id="m-pob" class="input-dark" placeholder=" " /><label data-i18n="form.pob"></label></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+          <div class="float-label-group"><input id="m-nin" class="input-dark font-mono" dir="ltr" placeholder=" " /><label data-i18n="form.nin"></label></div>
+          <div class="float-label-group"><input id="m-voteCard" class="input-dark font-mono" dir="ltr" placeholder=" " /><label data-i18n="form.voteCard"></label></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+          <div class="float-label-group"><input id="m-tel" class="input-dark font-mono" dir="ltr" placeholder=" " /><label data-i18n="form.tel"></label></div>
+          <div class="float-label-group"><input id="m-email" class="input-dark font-mono" dir="ltr" placeholder=" " /><label data-i18n="form.email"></label></div>
+        </div>
+      </form>
+
+      <div style="text-align:center;">
+        <div id="militantCard" class="hidden" style="max-width:400px;margin:0 auto;">
+          <div class="card-dark" style="padding:24px;overflow:hidden;position:relative;">
+            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--fln-gold);"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+              <span style="font-size:10px;font-weight:700;color:var(--fln-gold);text-transform:uppercase;letter-spacing:.1em;" data-i18n="card.membership"></span>
+              <img id="m-card-photo" style="width:56px;height:64px;object-fit:cover;border-radius:8px;border:2px solid rgba(245,158,11,.6);background:#cbd5e1;" alt="" />
+            </div>
+            <div style="color:#fff;text-align:right;">
+              <div id="m-card-name" class="font-amiri" style="font-size:18px;font-weight:900;">—</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:8px;"><span data-i18n="card.id"></span>: <span id="m-card-id" class="font-mono text-gold" dir="ltr">—</span></div>
+              <div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:4px;"><span data-i18n="card.dobpob"></span>: <span id="m-card-dobpob" style="color:rgba(245,158,11,.8);">—</span></div>
+              <div style="margin-top:16px;display:flex;justify-content:center;"><div class="pseudo-qr" style="width:64px;height:64px;background:#fff;border-radius:8px;"></div></div>
+            </div>
+          </div>
+        </div>
+        <button id="replayMilitant" onclick="resetMilitantDemo()" class="btn-pill btn-glass-pill btn-sm hidden" style="margin-top:16px;" data-i18n="nav.restart"></button>
       </div>
     </div>
+  </div>
   </section>
 
   <section id="slide3" class="slide min-h-screen flex-col items-center justify-center px-4 md:px-6 py-16">
-    <div class="w-full max-w-5xl mx-auto">
-      <div class="text-center mb-8">
-        <h2 class="text-2xl md:text-4xl font-extrabold text-white mb-2" data-i18n="slide3.title"></h2>
-        <p class="text-amber-400/80 text-sm" data-i18n="slide3.subtitle"></p>
+    <div style="width:100%;max-width:1024px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <h2 style="font-size:clamp(20px,3.5vw,40px);font-weight:900;color:#fff;margin-bottom:8px;" data-i18n="slide3.title"></h2>
+        <span class="btn-pill btn-sm" style="background:rgba(96,165,250,.15);color:#60a5fa;border:1.5px solid #60a5fa;" data-i18n="slide3.subtitle"></span>
       </div>
-      <div class="grid md:grid-cols-2 gap-6 items-start">
-        <form id="candidateForm" class="bg-slate-900/70 border border-slate-700/60 rounded-3xl p-5 md:p-7 space-y-3">
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.lastname"></label><input id="c-lastname" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.firstname"></label><input id="c-firstname" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+        <form id="candidateForm" class="card-dark" style="padding:28px;border-top:3px solid #60a5fa;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="float-label-group"><input id="c-lastname" class="input-dark" placeholder=" " /><label data-i18n="form.lastname"></label></div>
+            <div class="float-label-group"><input id="c-firstname" class="input-dark" placeholder=" " /><label data-i18n="form.firstname"></label></div>
           </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.dob"></label><input id="c-dob" type="date" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="form.pob"></label><input id="c-pob" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+            <div class="float-label-group"><input id="c-dob" type="date" class="input-dark" placeholder=" " style="padding-top:18px;" /><label data-i18n="form.dob"></label></div>
+            <div class="float-label-group"><input id="c-pob" class="input-dark" placeholder=" " /><label data-i18n="form.pob"></label></div>
           </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="cand.marital"></label><select id="c-marital" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></select></div>
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="cand.service"></label><select id="c-service" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></select></div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="cand.profession"></label><input id="c-profession" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></div>
-            <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="cand.phone"></label><input id="c-phone" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white font-mono" dir="ltr"></div>
-          </div>
-          <div><label class="text-xs text-slate-400 font-semibold mb-1 block" data-i18n="cand.mandates"></label><textarea id="c-mandates" rows="3" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-white"></textarea></div>
-        </form>
-
-        <div class="text-center">
-          <div id="candidatePreview" class="hidden mx-auto w-full max-w-sm bg-white text-slate-900 rounded-2xl shadow-2xl overflow-hidden">
-            <div class="bg-emerald-800 text-white px-4 py-2 text-center text-xs font-black tracking-widest">FLN — 2026</div>
-            <div class="p-5 space-y-2 text-left" dir="ltr">
-              <div class="flex items-center gap-3 mb-3">
-                <img id="c-preview-photo" class="w-12 h-14 object-cover rounded border border-slate-300 bg-slate-200" alt="" />
-                <div>
-                  <div class="font-black text-sm" id="c-preview-name">—</div>
-                  <div class="text-[10px] text-slate-500" id="c-preview-dobpob">—</div>
-                </div>
-              </div>
-              <div class="text-[11px]"><span class="font-bold">Profession:</span> <span id="c-preview-prof"></span></div>
-              <div class="text-[11px]"><span class="font-bold">Tél:</span> <span id="c-preview-phone"></span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+            <div class="float-label-group">
+              <select id="c-marital" class="input-dark" placeholder=" " style="padding-top:18px;"></select>
+              <label data-i18n="cand.marital"></label>
+            </div>
+            <div class="float-label-group">
+              <select id="c-service" class="input-dark" placeholder=" " style="padding-top:18px;"></select>
+              <label data-i18n="cand.service"></label>
             </div>
           </div>
-          <button id="replayCandidate" onclick="resetCandidateDemo()" class="hidden mt-6 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 font-bold rounded-xl px-5 py-2.5 text-sm" data-i18n="nav.restart"></button>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+            <div class="float-label-group"><input id="c-profession" class="input-dark" placeholder=" " /><label data-i18n="cand.profession"></label></div>
+            <div class="float-label-group"><input id="c-phone" class="input-dark font-mono" dir="ltr" placeholder=" " /><label data-i18n="cand.phone"></label></div>
+          </div>
+          <div class="float-label-group" style="margin-top:12px;">
+            <input id="c-mandates" class="input-dark" placeholder=" " />
+            <label data-i18n="cand.mandates"></label>
+          </div>
+        </form>
+
+        <div style="text-align:center;">
+          <div id="candidatePreview" class="hidden" style="max-width:400px;margin:0 auto;">
+            <div style="background:#fff;color:#1e293b;border-radius:16px;padding:24px;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);border:1px solid #cbd5e1;overflow:hidden;">
+              <div style="height:4px;background:var(--fln-green);margin:-24px -24px 16px;"></div>
+              <div style="display:flex;gap:12px;align-items:start;">
+                <img id="c-preview-photo" style="width:56px;height:64px;object-fit:cover;border-radius:8px;border:2px solid #e2e8f0;background:#e2e8f0;" alt="" />
+                <div style="flex:1;">
+                  <div id="c-preview-name" class="font-amiri" style="font-size:16px;font-weight:700;color:#0f172a;">—</div>
+                  <div style="font-size:11px;color:#475569;margin-top:4px;" id="c-preview-dobpob">—</div>
+                  <div style="font-size:11px;color:#475569;margin-top:2px;"><span data-i18n="cand.profession"></span>: <span id="c-preview-prof" style="font-weight:600;">—</span></div>
+                  <div style="font-size:11px;color:#475569;margin-top:2px;"><span data-i18n="cand.phone"></span>: <span id="c-preview-phone" class="font-mono">—</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button id="replayCandidate" onclick="resetCandidateDemo()" class="btn-pill btn-glass-pill btn-sm hidden" style="margin-top:16px;" data-i18n="nav.restart"></button>
         </div>
       </div>
     </div>
   </section>
 
   <section id="slide4" class="slide min-h-screen flex-col items-center justify-center px-4 md:px-6 py-16">
-    <div class="w-full max-w-5xl mx-auto">
-      <div class="text-center mb-8">
-        <h2 class="text-2xl md:text-4xl font-extrabold text-white mb-2" data-i18n="slide4.title"></h2>
-        <p class="text-amber-400/80 text-sm" data-i18n="slide4.subtitle"></p>
-        <div class="mt-4 inline-flex items-center gap-2 bg-slate-900/70 border border-slate-700/60 rounded-full px-5 py-2">
-          <span class="text-sm text-slate-400" data-i18n="stats.militants"></span>
-          <span id="dbCounter" class="text-2xl font-black text-green-400">24,500</span>
+    <div style="width:100%;max-width:1024px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <h2 style="font-size:clamp(20px,3.5vw,40px);font-weight:900;color:#fff;margin-bottom:8px;" data-i18n="slide4.title"></h2>
+        <p style="color:rgba(245,158,11,.8);font-size:14px;" data-i18n="slide4.subtitle"></p>
+        <div style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;background:rgba(129,140,248,.08);border:1.5px solid rgba(129,140,248,.3);border-radius:999px;padding:8px 20px;">
+          <span style="font-size:14px;color:var(--muted);" data-i18n="stats.militants"></span>
+          <span id="dbCounter" style="font-size:24px;font-weight:900;color:#818cf8;">24,500</span>
         </div>
       </div>
-      <div class="flex gap-2 mb-4">
-        <button id="tabMilitants" onclick="switchDbTab('militants')" class="bg-green-600 text-white font-bold rounded-xl px-5 py-2.5 text-sm" data-i18n="db.militants"></button>
-        <button id="tabCandidates" onclick="switchDbTab('candidates')" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 font-bold rounded-xl px-5 py-2.5 text-sm" data-i18n="db.candidates"></button>
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <button id="tabMilitants" onclick="switchDbTab('militants')" class="db-tab-btn active" style="border-radius:1rem;padding:10px 20px;font-size:12px;font-weight:700;cursor:pointer;background:rgba(129,140,248,.15);color:#fff;border:1.5px solid #818cf8;" data-i18n="db.militants"></button>
+        <button id="tabCandidates" onclick="switchDbTab('candidates')" class="db-tab-btn" style="border-radius:1rem;padding:10px 20px;font-size:12px;font-weight:700;cursor:pointer;background:rgba(10,31,16,.5);color:rgba(255,255,255,.6);border:1.5px solid rgba(255,255,255,.1);" data-i18n="db.candidates"></button>
       </div>
-      <div id="dbPanelMilitants" class="bg-slate-900/70 border border-slate-700/60 rounded-3xl overflow-hidden">
-        <table class="w-full text-sm">
-          <thead><tr class="text-slate-400 text-xs border-b border-slate-700">
-            <th class="p-3 text-right" data-i18n="db.membershipId"></th>
-            <th class="p-3 text-right">Nom</th>
-            <th class="p-3 text-right" data-i18n="db.wilaya"></th>
-            <th class="p-3 text-right" data-i18n="db.kesma"></th>
-            <th class="p-3 text-right" data-i18n="db.status"></th>
+      <div id="dbPanelMilitants" class="card-dark" style="overflow:hidden;">
+        <table class="table-militants">
+          <thead><tr>
+            <th style="padding:10px 8px;" data-i18n="db.membershipId"></th>
+            <th style="padding:10px 8px;">Nom</th>
+            <th style="padding:10px 8px;" data-i18n="db.wilaya"></th>
+            <th style="padding:10px 8px;" data-i18n="db.kesma"></th>
+            <th style="padding:10px 8px;" data-i18n="db.status"></th>
           </tr></thead>
           <tbody id="dbMilitantsBody"></tbody>
         </table>
       </div>
-      <div id="dbPanelCandidates" class="hidden bg-slate-900/70 border border-slate-700/60 rounded-3xl overflow-hidden">
-        <table class="w-full text-sm">
-          <thead><tr class="text-slate-400 text-xs border-b border-slate-700">
-            <th class="p-3 text-right">Nom</th>
-            <th class="p-3 text-right" data-i18n="cand.profession"></th>
-            <th class="p-3 text-right" data-i18n="db.wilaya"></th>
-            <th class="p-3 text-right" data-i18n="db.status"></th>
+      <div id="dbPanelCandidates" class="hidden card-dark" style="overflow:hidden;">
+        <table class="table-candidates">
+          <thead><tr>
+            <th style="padding:10px 8px;">Nom</th>
+            <th style="padding:10px 8px;" data-i18n="cand.profession"></th>
+            <th style="padding:10px 8px;" data-i18n="db.status"></th>
           </tr></thead>
           <tbody id="dbCandidatesBody"></tbody>
         </table>
@@ -213,31 +540,17 @@
     </div>
   </section>
 
-  <!-- pied de navigation commun -->
-  <div class="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur border-t border-slate-800 px-4 py-3 flex items-center justify-between">
-    <button id="prevBtn" onclick="goToPrev()" disabled class="bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-slate-200 font-bold rounded-xl px-4 py-2 text-sm" data-i18n="nav.prev"></button>
-    <div class="flex items-center gap-2">
-      <span class="dot w-2.5 h-2.5 rounded-full bg-green-500" onclick="goToSlide(0)"></span>
-      <span class="dot w-2.5 h-2.5 rounded-full bg-slate-600" onclick="goToSlide(1)"></span>
-      <span class="dot w-2.5 h-2.5 rounded-full bg-slate-600" onclick="goToSlide(2)"></span>
-      <span class="dot w-2.5 h-2.5 rounded-full bg-slate-600" onclick="goToSlide(3)"></span>
-      <span class="dot w-2.5 h-2.5 rounded-full bg-slate-600" onclick="goToSlide(4)"></span>
-    </div>
-    <button id="nextBtn" onclick="goToNext()" class="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold rounded-xl px-4 py-2 text-sm" data-i18n="nav.next"></button>
-  </div>
-
-  <section id="slide5" class="slide min-h-screen flex-col items-center justify-center px-6 py-16 bg-[radial-gradient(ellipse_at_bottom,rgba(251,191,36,0.12),transparent_60%)]">
-    <div class="max-w-3xl mx-auto text-center">
-      <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-3" data-i18n="slide5.title"></h2>
-      <p class="text-slate-300 mb-10" data-i18n="slide5.subtitle"></p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 text-right">
-        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5"><div class="text-lg font-bold text-green-400 mb-1">1</div><div data-i18n="conclusion.feature1"></div></div>
-        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5"><div class="text-lg font-bold text-green-400 mb-1">2</div><div data-i18n="conclusion.feature2"></div></div>
-        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5"><div class="text-lg font-bold text-green-400 mb-1">3</div><div data-i18n="conclusion.feature3"></div></div>
-        <div class="bg-slate-900/70 border border-slate-700/60 rounded-2xl p-5"><div class="text-lg font-bold text-green-400 mb-1">4</div><div data-i18n="conclusion.feature4"></div></div>
+  <section id="slide5" class="slide min-h-screen flex-col items-center justify-center px-6 py-16" style="background:radial-gradient(ellipse at bottom,rgba(245,158,11,.12),transparent 60%),var(--fln-bg);">
+    <div style="max-width:768px;margin:0 auto;text-align:center;">
+      <h2 class="shimmer-text font-amiri" style="font-size:clamp(24px,4vw,56px);font-weight:700;margin-bottom:12px;" data-i18n="slide5.title"></h2>
+      <p style="color:var(--muted);margin-bottom:40px;" data-i18n="slide5.subtitle"></p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:48px;text-align:right;">
+        <div class="card-dark" style="padding:20px;"><div class="text-gold" style="font-size:18px;font-weight:900;margin-bottom:4px;">1</div><div data-i18n="conclusion.feature1"></div></div>
+        <div class="card-dark" style="padding:20px;"><div class="text-gold" style="font-size:18px;font-weight:900;margin-bottom:4px;">2</div><div data-i18n="conclusion.feature2"></div></div>
+        <div class="card-dark" style="padding:20px;"><div class="text-gold" style="font-size:18px;font-weight:900;margin-bottom:4px;">3</div><div data-i18n="conclusion.feature3"></div></div>
+        <div class="card-dark" style="padding:20px;"><div class="text-gold" style="font-size:18px;font-weight:900;margin-bottom:4px;">4</div><div data-i18n="conclusion.feature4"></div></div>
       </div>
-      <a id="portalLink" href="https://motionmoon-star.github.io/fln-portal/" target="_blank" rel="noopener"
-        class="inline-block bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-extrabold rounded-2xl px-8 py-4 text-lg shadow-lg shadow-amber-900/40 transition" data-i18n="conclusion.cta"></a>
+      <a id="portalLink" href="https://motionmoon-star.github.io/fln-portal/" target="_blank" rel="noopener" class="btn-pill btn-gold-pill" data-i18n="conclusion.cta"></a>
     </div>
   </section>
 </main>
@@ -319,8 +632,7 @@ function goToSlide(n) {
   currentSlide = n;
   document.getElementById('progressBar').style.width = Math.round(((n + 1) / 5) * 100) + '%';
   document.querySelectorAll('.dot').forEach((d, i) => {
-    d.classList.toggle('bg-green-500', i === n);
-    d.classList.toggle('bg-slate-600', i !== n);
+    d.classList.toggle('active', i === n);
   });
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
@@ -492,25 +804,22 @@ function dbRowMilitant(m, isNew) {
     <td class="p-3 font-bold"><img src="${svgAvatar('M')}" class="inline-block w-7 h-8 object-cover rounded mr-2 align-middle" alt="" />${m.lastname} ${m.firstname}</td>
     <td class="p-3 text-slate-300">${m.wilaya}</td>
     <td class="p-3 text-slate-300">${m.kesma}</td>
-    <td class="p-3"><span class="text-green-400 bg-green-500/10 border border-green-500/25 rounded-full px-2.5 py-0.5 text-xs" data-i18n="db.active">${m.status}</span></td>
+    <td style="padding:10px 8px;"><span class="badge-active" data-i18n="db.active">${m.status}</span></td>
   </tr>`;
 }
 function dbRowCandidate(c) {
-  return `<tr class="border-b border-slate-800">
-    <td class="p-3 font-bold">${c.lastname} ${c.firstname}</td>
-    <td class="p-3 text-slate-300">${c.profession}</td>
-    <td class="p-3 text-slate-300">${c.wilaya}</td>
-    <td class="p-3"><span class="text-green-400 bg-green-500/10 border border-green-500/25 rounded-full px-2.5 py-0.5 text-xs">نشط</span></td>
+  return `<tr style="border-bottom:1px solid rgba(255,255,255,.06);">
+    <td style="padding:10px 8px;font-weight:700;">${c.lastname} ${c.firstname}</td>
+    <td style="padding:10px 8px;color:var(--muted);">${c.profession}</td>
+    <td style="padding:10px 8px;"><span class="badge-active">نشط</span></td>
   </tr>`;
 }
 function switchDbTab(tab) {
   const m = tab === 'militants';
   document.getElementById('dbPanelMilitants').classList.toggle('hidden', !m);
   document.getElementById('dbPanelCandidates').classList.toggle('hidden', m);
-  document.getElementById('tabMilitants').classList.toggle('bg-green-600', m);
-  document.getElementById('tabMilitants').classList.toggle('bg-slate-800', !m);
-  document.getElementById('tabCandidates').classList.toggle('bg-green-600', !m);
-  document.getElementById('tabCandidates').classList.toggle('bg-slate-800', m);
+  document.getElementById('tabMilitants').classList.toggle('active', m);
+  document.getElementById('tabCandidates').classList.toggle('active', !m);
 }
 function playDatabaseDemo() {
   const e = DEMO_MILITANT_ENTRY;
@@ -526,11 +835,10 @@ function playDatabaseDemo() {
     counterEl.textContent = counter.toLocaleString('en-US');
     const c = DEMO_CANDIDATE_ENTRY;
     const newCandidate = { lastname: c.lastname, firstname: c.firstname, profession: c.profession.ar, wilaya: c.pob };
-    document.getElementById('dbCandidatesBody').insertAdjacentHTML('afterbegin', `<tr class="row-new border-b border-slate-800">
-      <td class="p-3 font-bold">${newCandidate.lastname} ${newCandidate.firstname}</td>
-      <td class="p-3 text-slate-300">${newCandidate.profession}</td>
-      <td class="p-3 text-slate-300">${newCandidate.wilaya}</td>
-      <td class="p-3"><span class="text-green-400 bg-green-500/10 border border-green-500/25 rounded-full px-2.5 py-0.5 text-xs">نشط</span></td>
+    document.getElementById('dbCandidatesBody').insertAdjacentHTML('afterbegin', `<tr style="border-bottom:1px solid rgba(255,255,255,.06);">
+      <td style="padding:10px 8px;font-weight:700;">${newCandidate.lastname} ${newCandidate.firstname}</td>
+      <td style="padding:10px 8px;color:var(--muted);">${newCandidate.profession}</td>
+      <td style="padding:10px 8px;"><span class="badge-active">نشط</span></td>
     </tr>`);
     counter += 1;
     counterEl.textContent = counter.toLocaleString('en-US');
